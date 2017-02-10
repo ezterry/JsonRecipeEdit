@@ -1,7 +1,10 @@
 buildscript {
     repositories {
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
@@ -9,12 +12,21 @@ buildscript {
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven'
+
+repositories {
+    maven { // JEI
+        url "http://dvs1.progwml6.com/files/maven"
+    }
+}
 
 /* Build Version */
 
-def mod_vers_part = "0.1"
+def mod_vers_part = "0.1-pre1"
 def mc_vers_part = "1.11.2"
 
+/* JEI version we load the api from */
+def jei_version = "4.2.4.230"
 
 version = "${mc_vers_part}-${mod_vers_part}"
 group= "com.ezrol.terry.minecraft.JsonRecipeEdit"
@@ -39,6 +51,7 @@ minecraft {
     replace '${version}', project.version
 }
 
+
 dependencies {
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
@@ -61,6 +74,8 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
+    // compile against the JEI API
+    deobfCompile "mezz.jei:jei_${mc_vers_part}:${jei_version}"
 }
 
 processResources

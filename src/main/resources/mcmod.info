@@ -1,11 +1,11 @@
 [
 {
-  "modid": "reciperecipeedit",
-  "name": "json Recipe Edit",
+  "modid": "jsonrecipeedit",
+  "name": "JSON Recipe Edit",
   "description": "JSON based recipe editor",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "http://minecraft.curseforge.com/projects/jsonRecipeEdit",
+  "url": "",
   "updateUrl": "",
   "authorList": ["EzTerry"],
   "credits": "A simple JSON based recipe editor under the BSD license",
