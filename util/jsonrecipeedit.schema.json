@@ -1,0 +1,185 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "JSON Recipe Edit Schema",
+  "description": "the schema definition for EzTerry's JSON Recipe Edit",
+  "type": "array",
+  "items": {
+    "anyOf": [
+      {
+        "description": "comment",
+        "type": "string"
+      },
+      {
+        "description": "delete recipe",
+        "type": "object",
+        "$ref": "#/definitions/deleteRecipe"
+      },
+      {
+        "description": "shaped recipe",
+        "type": "object",
+        "$ref": "#/definitions/shapedrecipe"
+      },
+      {
+        "description": "shapeless recipe",
+        "type": "object",
+        "$ref": "#/definitions/shapelessrecipe"
+      }
+    ]
+  },
+  "definitions": {
+    "deleteRecipe": {
+      "properties": {
+        "command": {
+          "enum": [
+            "delete recipe"
+          ]
+        },
+        "item": {
+          "description": "In Game item usually: <modid>:<item name>",
+          "type": "string"
+        },
+        "meta": {
+          "description": "metadata id (default=0)",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "command",
+        "item"
+      ],
+      "additionalProperties": false
+    },
+    "shapedrecipe": {
+      "properties": {
+        "command": {
+          "enum": [
+            "shaped recipe"
+          ]
+        },
+        "ingredients": {
+          "description": "shapeless recipe",
+          "type": "object",
+          "$ref": "#/definitions/recipe ingredients"
+        },
+        "template": {
+          "description": "recipe template",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[a-z ]{1,3}$"
+              }
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 3
+        },
+        "count": {
+          "description": "size of the item stack to return [default = 1]",
+          "type": "integer"
+        },
+        "result": {
+          "description": "Crafted Item",
+          "type": "array",
+          "items": [
+            {
+              "type": "string",
+              "description": "ingredient item"
+            },
+            {
+              "type": "integer",
+              "description": "ingredient meta (default=0)"
+            },
+            {
+              "type": "string",
+              "description": "nbt data"
+            }
+          ],
+          "minItems": 1,
+          "maxItems": 3
+        },
+        "mirrored": {
+          "type": "boolean",
+          "description": "Can the recipe be mirrored (default = true)"
+        }
+      },
+      "required": [
+        "command",
+        "ingredients",
+        "template",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "shapelessrecipe": {
+      "properties": {
+        "command": {
+          "enum": [
+            "shapeless recipe"
+          ]
+        },
+        "ingredients": {
+          "description": "shapeless recipe",
+          "type": "object",
+          "$ref": "#/definitions/recipe ingredients"
+        },
+        "result": {
+          "description": "Crafted Item",
+          "type": "array",
+          "items": [
+            {
+              "type": "string",
+              "description": "ingredient item"
+            },
+            {
+              "type": "integer",
+              "description": "ingredient meta (default=0)"
+            },
+            {
+              "type": "string",
+              "description": "nbt data"
+            }
+          ],
+          "minItems": 1,
+          "maxItems": 3
+        }
+      },
+      "required": [
+        "command",
+        "ingredients",
+        "result"
+      ],
+      "additionalProperties": false
+    },
+    "recipe ingredients": {
+      "patternProperties": {
+        "^[a-z]$": {
+          "oneOf": [
+            {
+              "description": "Ore dictionary entry",
+              "type": "string"
+            },
+            {
+              "description": "Item entry",
+              "type": "array",
+              "items": [
+                {
+                  "type": "string",
+                  "description": "ingredient item"
+                },
+                {
+                  "type": "integer",
+                  "description": "ingredient meta (default=0)"
+                }
+              ],
+              "minItems": 1,
+              "maxItems": 2
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}
