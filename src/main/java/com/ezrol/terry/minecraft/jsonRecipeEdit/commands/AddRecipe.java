@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -43,6 +44,7 @@ public class AddRecipe extends GenericCommand{
         }
     }
 
+    @Nullable
     private ItemStack getItemFromArray(JsonArray input,int amount){
         if(input.size() == 0){
             error("null array expecting [<item name>] or [<item name>,<meta>]");
@@ -149,10 +151,14 @@ public class AddRecipe extends GenericCommand{
             else{
                 shapedRecipe.setMirrored(true);
             }
+
+            info(String.format("Add recipe for %s.",result));
             GameRegistry.addRecipe(shapedRecipe);
         }
         else{
             ShapelessOreRecipe shapelessRecipe = new ShapelessOreRecipe(result,params.toArray());
+
+            info(String.format("Add recipe for %s.",result));
             GameRegistry.addRecipe(shapelessRecipe);
         }
     }

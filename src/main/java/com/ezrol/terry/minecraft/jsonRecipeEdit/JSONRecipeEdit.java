@@ -16,7 +16,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 @Mod(
         modid = JSONRecipeEdit.MODID,
         version = JSONRecipeEdit.VERSION,

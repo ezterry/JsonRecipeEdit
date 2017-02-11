@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Level;
  *
  * Created by ezterry on 2/9/17.
  */
+@SuppressWarnings("WeakerAccess")
 public abstract class GenericCommand implements IRECommand{
     protected final void log(Level lvl,String msg){
         JSONRecipeEdit.log(lvl,String.format("(%s) %s",this.getCommandName(),msg));
