@@ -30,6 +30,7 @@ package com.ezrol.terry.minecraft.jsonRecipeEdit;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.api.CommandRegistry;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.commands.AddRecipe;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.commands.DeleteRecipe;
+import com.ezrol.terry.minecraft.jsonRecipeEdit.commands.RegisterOre;
 import com.google.gson.*;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
@@ -115,6 +116,7 @@ public class JSONRecipeEdit {
         cr.register(new DeleteRecipe());  //"delete recipe"
         cr.register(new AddRecipe(true));  //"shaped recipe"
         cr.register(new AddRecipe(false)); //"shapeless recipe"
+        cr.register(new RegisterOre());
     }
 
     @EventHandler

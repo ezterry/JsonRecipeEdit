@@ -71,32 +71,6 @@ public class AddRecipe extends GenericCommand{
         }
     }
 
-    @Nullable
-    private ItemStack getItemFromArray(JsonArray input,int amount){
-        if(input.size() == 0){
-            error("null array expecting [<item name>] or [<item name>,<meta>]");
-            return(null);
-        }
-        int meta = 0;
-
-        try{
-            ResourceLocation itemres;
-            itemres = new ResourceLocation(input.get(0).getAsString());
-            if(input.size()>=2){
-                meta = input.get(1).getAsInt();
-            }
-            Item item = ForgeRegistries.ITEMS.getValue(itemres);
-            if(item == null){
-                return null;
-            }
-            return(new ItemStack(item, amount, meta));
-        }
-        catch(Exception e){
-            error(String.format("Unable to read in item from json: %s",e.toString()));
-            return null;
-        }
-    }
-
     @Override
     public void runCommand(JsonObject command) {
         List<Object> params = new LinkedList<>();

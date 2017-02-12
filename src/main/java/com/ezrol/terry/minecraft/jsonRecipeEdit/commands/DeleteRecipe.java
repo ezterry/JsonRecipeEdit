@@ -34,6 +34,7 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -56,7 +57,13 @@ public class DeleteRecipe extends GenericCommand{
 
         itemname = new ResourceLocation(command.get("item").getAsString());
         if(command.has("meta")){
-            meta = command.get("meta").getAsNumber().intValue();
+            if(command.get("meta").getAsJsonPrimitive().isString() &&
+                    command.get("meta").getAsJsonPrimitive().getAsString().equals("*")){
+                meta = OreDictionary.WILDCARD_VALUE;
+            }
+            else {
+                meta = command.get("meta").getAsNumber().intValue();
+            }
         }
 
         //get the item stack item+meta
@@ -73,7 +80,10 @@ public class DeleteRecipe extends GenericCommand{
         LinkedList<Integer> todelete = new LinkedList<>();
 
         for(IRecipe cur : recipeList){
-            if(cur.getRecipeOutput().isItemEqual(testitem)){
+            if(meta == OreDictionary.WILDCARD_VALUE && cur.getRecipeOutput().getItem().equals(testitem.getItem())){
+                todelete.addFirst(index);
+            }
+            else if(cur.getRecipeOutput().isItemEqual(testitem)){
                 todelete.addFirst(index);
             }
             index ++;

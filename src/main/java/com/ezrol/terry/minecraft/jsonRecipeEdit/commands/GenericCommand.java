@@ -29,7 +29,15 @@ package com.ezrol.terry.minecraft.jsonRecipeEdit.commands;
 
 import com.ezrol.terry.minecraft.jsonRecipeEdit.JSONRecipeEdit;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.api.IRECommand;
+import com.google.gson.JsonArray;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.Level;
+
+import javax.annotation.Nullable;
 
 /**
  * A shell to the built in commands to add some logging shortcuts
@@ -46,5 +54,38 @@ public abstract class GenericCommand implements IRECommand{
     }
     protected final void info(String msg){
         log(Level.INFO,msg);
+    }
+
+    @Nullable
+    protected ItemStack getItemFromArray(JsonArray input, int amount){
+        if(input.size() == 0){
+            error("null array expecting [<item name>] or [<item name>,<meta>]");
+            return(null);
+        }
+        int meta = 0;
+
+        try{
+            ResourceLocation itemres;
+            itemres = new ResourceLocation(input.get(0).getAsString());
+
+            if(input.size()>=2){
+                if(input.get(1).getAsJsonPrimitive().isString() &&
+                        input.get(1).getAsJsonPrimitive().getAsString().equals("*")){
+                    meta = OreDictionary.WILDCARD_VALUE;
+                }
+                else {
+                    meta = input.get(1).getAsInt();
+                }
+            }
+            Item item = ForgeRegistries.ITEMS.getValue(itemres);
+            if(item == null){
+                return null;
+            }
+            return(new ItemStack(item, amount, meta));
+        }
+        catch(Exception e){
+            error(String.format("Unable to read in item from json: %s",e.toString()));
+            return null;
+        }
     }
 }
