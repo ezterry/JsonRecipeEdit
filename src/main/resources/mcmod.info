@@ -4,7 +4,7 @@
     "name": "JSON Recipe Edit",
     "version": "${version}",
     "mcversion": "${mcversion}",
-    "url": "",
+    "url": "https://minecraft.curseforge.com/projects/json-recipe-edit",
     "updateUrl": "",
     "authorList": [
       "EzTerry"

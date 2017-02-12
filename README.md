@@ -52,9 +52,13 @@ mod (for more details a link and examples will be
 provided)
 
 1. ``delete recipe``: find and remove a crafting recipe
-1. ``shaped recipe``: Create a new shaped crafting recipe
-1. ``shapeless recipe``: Create a new shapeless crafting
+1. ``shaped recipe``: create a new shaped crafting recipe
+1. ``shapeless recipe``: create a new shapeless crafting
 recipe
+1. ``register ore``: register (add) item(s) to a OreDictionary entry
+1. ``delete furnace``: delete a furnace smelting recipe
+1. ``add furnace``: add a furnace smelting recipe
+1. ``hide in jei``: hide an item form the JEI ingredient listing
 
 ## Mod Packs / Reuse Policy ##
 
@@ -114,3 +118,8 @@ Then in your mods ``init()``, call the constructor if
  Note" the schema object provided with this mod will not
  support third part mods out of box, althogh alternatives
  may be made for popular mods.
+ 
+ ## Wiki ##
+ 
+ Additional documentation is available on the wiki:
+ https://github.com/ezterry/JsonRecipeEdit/wiki
