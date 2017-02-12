@@ -27,20 +27,15 @@
 
 package com.ezrol.terry.minecraft.jsonRecipeEdit.commands;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -50,7 +45,7 @@ import java.util.*;
  * Created by ezterry on 2/9/17.
  */
 public class AddRecipe extends GenericCommand{
-    private boolean shapped;
+    private final boolean shapped;
     static private final String validref="abcdefghijklmnopqrstuvwxyz";
 
     public AddRecipe(boolean shapped){

@@ -19,15 +19,23 @@
           },
           {
             "title": "Shaped Recipe",
-            "$ref": "#/definitions/shapedrecipe"
+            "$ref": "#/definitions/shapedRecipe"
           },
           {
             "title": "Shapeless Recipe",
-            "$ref": "#/definitions/shapelessrecipe"
+            "$ref": "#/definitions/shapelessRecipe"
           },
           {
             "title": "Register Ore",
-            "$ref": "#/definitions/registerore"
+            "$ref": "#/definitions/registerOre"
+          },
+          {
+            "title": "Delete Furnace",
+            "$ref": "#/definitions/deleteFurnace"
+          },
+          {
+            "title": "Add Furnace",
+            "$ref": "#/definitions/addFurnace"
           }
         ]
       }
@@ -46,7 +54,7 @@
           "type": "string"
         },
         "meta": {
-          "oneOf":[
+          "oneOf": [
             {
               "type": "integer"
             },
@@ -65,7 +73,7 @@
       ],
       "additionalProperties": false
     },
-    "shapedrecipe": {
+    "shapedRecipe": {
       "properties": {
         "command": {
           "enum": [
@@ -128,7 +136,7 @@
       ],
       "additionalProperties": false
     },
-    "shapelessrecipe": {
+    "shapelessRecipe": {
       "properties": {
         "command": {
           "enum": [
@@ -149,7 +157,7 @@
               "description": "result item"
             },
             {
-              "oneOf":[
+              "oneOf": [
                 {
                   "type": "integer"
                 },
@@ -177,7 +185,7 @@
       ],
       "additionalProperties": false
     },
-    "registerore":{
+    "registerOre": {
       "properties": {
         "command": {
           "enum": [
@@ -186,13 +194,12 @@
         },
         "name": {
           "description": "Name of the ore dictionary entry",
-          "type":"string"
+          "type": "string"
         },
         "items": {
           "description": "List of items to add to this ore dictionary entry",
-          "type":"array",
-          "items":
-          {
+          "type": "array",
+          "items": {
             "description": "Item entry",
             "type": "array",
             "items": [
@@ -201,7 +208,7 @@
                 "description": "ingredient item"
               },
               {
-                "oneOf":[
+                "oneOf": [
                   {
                     "type": "integer"
                   },
@@ -243,7 +250,7 @@
                   "description": "ingredient item"
                 },
                 {
-                  "oneOf":[
+                  "oneOf": [
                     {
                       "type": "integer"
                     },
@@ -262,6 +269,114 @@
           ]
         }
       },
+      "additionalProperties": false
+    },
+    "deleteFurnace": {
+      "properties": {
+        "command": {
+          "enum": [
+            "delete furnace"
+          ]
+        },
+        "item": {
+          "description": "In Game item usually: <modid>:<item name>",
+          "type": "string"
+        },
+        "meta": {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "enum": [
+                "*"
+              ]
+            }
+          ],
+          "description": "ingredient id (default=0)"
+        }
+      },
+      "required": [
+        "command",
+        "item"
+      ],
+      "additionalProperties": false
+    },
+    "addFurnace": {
+      "properties": {
+        "command": {
+          "enum": [
+            "add furnace"
+          ]
+        },
+        "count": {
+          "type": "integer",
+          "description": "Number of items that smelt per craft"
+        },
+        "output": {
+          "description": "Crafted Item",
+          "type": "array",
+          "items": [
+            {
+              "type": "string",
+              "description": "result item"
+            },
+            {
+              "oneOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "enum": [
+                    "*"
+                  ]
+                }
+              ],
+              "description": "result meta (default=0)"
+            },
+            {
+              "type": "string",
+              "description": "nbt data"
+            }
+          ],
+          "minItems": 1,
+          "maxItems": 3
+        },
+        "input": {
+          "description": "Crafted Item",
+          "type": "array",
+          "items": [
+            {
+              "type": "string",
+              "description": "result item"
+            },
+            {
+              "oneOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "enum": [
+                    "*"
+                  ]
+                }
+              ],
+              "description": "input meta (default=0)"
+            }
+          ],
+          "minItems": 1,
+          "maxItems": 2
+        },
+        "xp": {
+          "type": "number",
+          "description": "amount of XP to give 0.1 by default."
+        }
+      },
+      "required": [
+        "input",
+        "output",
+        "command"
+      ],
       "additionalProperties": false
     }
   }

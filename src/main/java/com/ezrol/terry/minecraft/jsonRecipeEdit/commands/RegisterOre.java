@@ -59,6 +59,10 @@ public class RegisterOre extends GenericCommand {
                 continue;
             }
             ItemStack i = getItemFromArray(itm.getAsJsonArray(),1);
+            if(i == null){
+                error(String.format("unable to find item: %s",itm.toString()));
+                continue;
+            }
             info(String.format("Adding %s to ore dictionary %s.",orename,i.toString()));
             OreDictionary.registerOre(orename,i);
         }
