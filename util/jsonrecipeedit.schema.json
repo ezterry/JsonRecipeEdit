@@ -36,6 +36,10 @@
           {
             "title": "Add Furnace",
             "$ref": "#/definitions/addFurnace"
+          },
+          {
+            "title": "Hide in JEI",
+            "$ref": "#/definitions/hideInJEI"
           }
         ]
       }
@@ -147,6 +151,10 @@
           "description": "shapeless recipe",
           "type": "object",
           "$ref": "#/definitions/recipe ingredients"
+        },
+        "count": {
+          "description": "size of the item stack to return [default = 1]",
+          "type": "integer"
         },
         "result": {
           "description": "Crafted Item",
@@ -375,6 +383,45 @@
       "required": [
         "input",
         "output",
+        "command"
+      ],
+      "additionalProperties": false
+    },
+    "hideInJEI": {
+      "properties": {
+        "command": {
+          "enum": [
+            "hide in jei"
+          ]
+        },
+        "item": {
+          "description": "Item to hide",
+          "type": "array",
+          "items": [
+            {
+              "type": "string",
+              "description": "result item"
+            },
+            {
+              "oneOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "enum": [
+                    "*"
+                  ]
+                }
+              ],
+              "description": "input meta (default=0)"
+            }
+          ],
+          "minItems": 1,
+          "maxItems": 2
+        }
+      },
+      "required": [
+        "item",
         "command"
       ],
       "additionalProperties": false

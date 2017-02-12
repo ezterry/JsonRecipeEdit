@@ -111,12 +111,13 @@ public class JSONRecipeEdit {
     public void init(FMLInitializationEvent event) {
         CommandRegistry cr = CommandRegistry.getInstance();
 
-        cr.register(new DeleteRecipe());  //"delete recipe"
+        cr.register(new DeleteRecipe());
         cr.register(new AddRecipe(true));  //"shaped recipe"
         cr.register(new AddRecipe(false)); //"shapeless recipe"
         cr.register(new RegisterOre());
         cr.register(new DeleteFurnace());
         cr.register(new AddFurnace());
+        cr.register(new HideInJEI());
     }
 
     @EventHandler
