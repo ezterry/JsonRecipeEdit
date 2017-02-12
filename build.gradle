@@ -22,7 +22,7 @@ repositories {
 
 /* Build Version */
 
-def mod_vers_part = "0.1-pre1"
+def mod_vers_part = "0.1-pre2"
 def mc_vers_part = "1.11.2"
 
 /* JEI version we load the api from */
