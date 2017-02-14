@@ -32,6 +32,8 @@ import com.ezrol.terry.minecraft.jsonRecipeEdit.api.IRECommand;
 import com.google.gson.JsonArray;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
@@ -56,6 +58,16 @@ public abstract class GenericCommand implements IRECommand{
         log(Level.INFO,msg);
     }
 
+    /**
+     * Gets an ItemStack from an Json array of 1 to 2 in length
+     * param 1: item "modid:name"
+     * param 2: meta a number or "*" for a wildcard (default 0 if omitted)
+     * param 3: nbt a string of the nbt data (default "" if omitted)
+     *
+     * @param input Json Array to process
+     * @param amount number of items in the stack
+     * @return ItemStack representing the input
+     */
     @Nullable
     protected ItemStack getItemFromArray(JsonArray input, int amount){
         if(input.size() == 0){
@@ -81,7 +93,19 @@ public abstract class GenericCommand implements IRECommand{
             if(item == null){
                 return null;
             }
-            return(new ItemStack(item, amount, meta));
+            ItemStack stack = new ItemStack(item, amount, meta);
+            if(input.size()>=3){
+                try
+                {
+                    stack.setTagCompound(JsonToNBT.getTagFromJson(input.get(2).getAsString()));
+                }
+                catch (NBTException nbtexception)
+                {
+                    error(String.format("unable to parse NBT: %s",nbtexception));
+                    error(String.format("String ignoring NBT data for command: %s",input.toString()));
+                }
+            }
+            return(stack);
         }
         catch(Exception e){
             error(String.format("Unable to read in item from json: %s",e.toString()));

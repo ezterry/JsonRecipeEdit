@@ -130,24 +130,8 @@
           "type": "integer"
         },
         "result": {
-          "description": "Crafted Item",
-          "type": "array",
-          "items": [
-            {
-              "type": "string",
-              "description": "ingredient item"
-            },
-            {
-              "type": "integer",
-              "description": "ingredient meta (default=0)"
-            },
-            {
-              "type": "string",
-              "description": "nbt data"
-            }
-          ],
-          "minItems": 1,
-          "maxItems": 3
+          "description": "Item to craft",
+          "$ref": "#/definitions/item array"
         },
         "mirrored": {
           "type": "boolean",
@@ -179,33 +163,8 @@
           "type": "integer"
         },
         "result": {
-          "description": "Crafted Item",
-          "type": "array",
-          "items": [
-            {
-              "type": "string",
-              "description": "result item"
-            },
-            {
-              "oneOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "enum": [
-                    "*"
-                  ]
-                }
-              ],
-              "description": "result meta (default=0)"
-            },
-            {
-              "type": "string",
-              "description": "nbt data"
-            }
-          ],
-          "minItems": 1,
-          "maxItems": 3
+          "description": "Item to craft",
+          "$ref": "#/definitions/item array"
         }
       },
       "required": [
@@ -231,28 +190,7 @@
           "type": "array",
           "items": {
             "description": "Item entry",
-            "type": "array",
-            "items": [
-              {
-                "type": "string",
-                "description": "ingredient item"
-              },
-              {
-                "oneOf": [
-                  {
-                    "type": "integer"
-                  },
-                  {
-                    "enum": [
-                      "*"
-                    ]
-                  }
-                ],
-                "description": "ingredient meta (default=0)"
-              }
-            ],
-            "minItems": 1,
-            "maxItems": 2
+            "$ref": "#/definitions/item array"
           }
         }
       },
@@ -307,57 +245,11 @@
         },
         "output": {
           "description": "Crafted Item",
-          "type": "array",
-          "items": [
-            {
-              "type": "string",
-              "description": "result item"
-            },
-            {
-              "oneOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "enum": [
-                    "*"
-                  ]
-                }
-              ],
-              "description": "result meta (default=0)"
-            },
-            {
-              "type": "string",
-              "description": "nbt data"
-            }
-          ],
-          "minItems": 1,
-          "maxItems": 3
+          "$ref": "#/definitions/item array"
         },
         "input": {
           "description": "Crafted Item",
-          "type": "array",
-          "items": [
-            {
-              "type": "string",
-              "description": "result item"
-            },
-            {
-              "oneOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "enum": [
-                    "*"
-                  ]
-                }
-              ],
-              "description": "input meta (default=0)"
-            }
-          ],
-          "minItems": 1,
-          "maxItems": 2
+          "$ref": "#/definitions/item array"
         },
         "xp": {
           "type": "number",
@@ -380,28 +272,7 @@
         },
         "item": {
           "description": "Item to hide",
-          "type": "array",
-          "items": [
-            {
-              "type": "string",
-              "description": "result item"
-            },
-            {
-              "oneOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "enum": [
-                    "*"
-                  ]
-                }
-              ],
-              "description": "input meta (default=0)"
-            }
-          ],
-          "minItems": 1,
-          "maxItems": 2
+          "$ref": "#/definitions/item array"
         }
       },
       "required": [
@@ -420,33 +291,40 @@
             },
             {
               "description": "Item entry",
-              "type": "array",
-              "items": [
-                {
-                  "type": "string",
-                  "description": "ingredient item"
-                },
-                {
-                  "oneOf": [
-                    {
-                      "type": "integer"
-                    },
-                    {
-                      "enum": [
-                        "*"
-                      ]
-                    }
-                  ],
-                  "description": "ingredient meta (default=0)"
-                }
-              ],
-              "minItems": 1,
-              "maxItems": 2
+              "$ref": "#/definitions/item array"
             }
           ]
         }
       },
       "additionalProperties": false
+    },
+    "item array": {
+      "type": "array",
+      "items": [
+        {
+          "type": "string",
+          "description": "item (modid:name)"
+        },
+        {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "enum": [
+                "*"
+              ]
+            }
+          ],
+          "description": "input meta (default=0)"
+        },
+        {
+          "type": "string",
+          "description": "nbt data"
+        }
+      ],
+      "minItems": 1,
+      "maxItems": 3
     }
   }
 }

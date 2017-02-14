@@ -29,8 +29,6 @@ package com.ezrol.terry.minecraft.jsonRecipeEdit.commands;
 
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 /**
@@ -69,18 +67,7 @@ public class AddFurnace extends GenericCommand {
             error(String.format("unable to find Item in result while running command %s",command.toString()));
             return;
         }
-        if(command.get("output").getAsJsonArray().size()>=3){
-            try
-            {
-                out.setTagCompound(
-                        JsonToNBT.getTagFromJson(command.get("output").getAsJsonArray().get(2).getAsString()));
-            }
-            catch (NBTException nbtexception)
-            {
-                error(String.format("unable to parse NBT: %s",nbtexception));
-                error(String.format("String ignoring NBT data for command: %s",command.toString()));
-            }
-        }
+
         if(command.has("xp")){
             xp = command.get("xp").getAsFloat();
         }

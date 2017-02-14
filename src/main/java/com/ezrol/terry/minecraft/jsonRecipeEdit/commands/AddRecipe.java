@@ -30,8 +30,6 @@ package com.ezrol.terry.minecraft.jsonRecipeEdit.commands;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -120,18 +118,6 @@ public class AddRecipe extends GenericCommand{
         if(result == null){
             error(String.format("unable to find Item in result while running command %s",command.toString()));
             return;
-        }
-        if(command.get("result").getAsJsonArray().size()>=3){
-            try
-            {
-                result.setTagCompound(
-                        JsonToNBT.getTagFromJson(command.get("result").getAsJsonArray().get(2).getAsString()));
-            }
-            catch (NBTException nbtexception)
-            {
-                error(String.format("unable to parse NBT: %s",nbtexception));
-                error(String.format("String ignoring NBT data for command: %s",command.toString()));
-            }
         }
 
         //now the recipe is loaded
