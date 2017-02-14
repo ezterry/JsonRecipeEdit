@@ -30,6 +30,7 @@ package com.ezrol.terry.minecraft.jsonRecipeEdit;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.api.CommandRegistry;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.commands.*;
 import com.google.gson.*;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -40,6 +41,7 @@ import org.apache.logging.log4j.Level;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
@@ -53,7 +55,7 @@ public class JSONRecipeEdit {
     public static final String MODID = "jsonrecipeedit";
     public static final String VERSION = "${version}";
 
-    private JsonArray script;
+    private File mainscript; //the location of the main Json Script
 
     /**
      * output to the "log"
@@ -80,33 +82,44 @@ public class JSONRecipeEdit {
         return (new File(path + ".json"));
     }
 
+    /**
+     * Early Forge initialization event, here we can check the existance of the primary Json Script
+     *
+     * @param event Forge event data
+     */
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
-        log(Level.INFO,"Get JSON file");
+        log(Level.INFO, "Get JSON file");
 
-        File jsonFile = TransformToJsonFile(event.getSuggestedConfigurationFile());
-        if (!jsonFile.exists()) {
+        mainscript = TransformToJsonFile(event.getSuggestedConfigurationFile());
+        if (!mainscript.exists()) {
             log(Level.ERROR,
-                    String.format("Json Recipe Edit unable to find json file: %s", jsonFile.getAbsolutePath()));
-            script=new JsonArray();
-        }
-        else{
+                    String.format("Json Recipe Edit unable to find json file: %s", mainscript.getAbsolutePath()));
+
+            Gson jsonbuilder = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+            JsonArray tmpl = new JsonArray();
+            tmpl.add(new JsonPrimitive("** Enter your Json Script here **"));
+            tmpl.add(new JsonPrimitive("For details see: https://github.com/ezterry/JsonRecipeEdit/wiki"));
+
+            log(Level.INFO, "Creating empty JSON script");
             try {
-                FileReader f = new FileReader(jsonFile);
-                script=new Gson().fromJson(f,JsonArray.class);
-            }
-            catch (JsonSyntaxException e){
-                log(Level.ERROR,String.format("Expected to find a JSON array in %s",jsonFile.getAbsolutePath()));
-                script=new JsonArray();
-            }
-            catch (IOException e){
-                log(Level.ERROR,"Error reading in JSON file");
-                log(Level.ERROR,e.toString());
-                script=new JsonArray();
+                FileWriter f = new FileWriter(mainscript);
+
+                f.write(jsonbuilder.toJson(tmpl));
+                f.close();
+            } catch (IOException e) {
+                log(Level.ERROR, "Error writing to json file");
+                log(Level.ERROR, e.toString());
             }
         }
     }
 
+    /**
+     * The main forge initialization event
+     * Here we register the built in JsonRecipeEdit commands
+     *
+     * @param event Forge event data
+     */
     @EventHandler
     public void init(FMLInitializationEvent event) {
         CommandRegistry cr = CommandRegistry.getInstance();
@@ -120,46 +133,98 @@ public class JSONRecipeEdit {
         cr.register(new HideInJEI());
     }
 
+    /**
+     * This is a forge event after PostInit, mostly used by forge to clean up internal entries
+     * We are using it to ensure the user changes are applied after mods are done adding recipes
+     *
+     * Note we must run prior to JEI or JEI will not see the updated recipes (this is done via the @Mod
+     * annotation)
+     *
+     *
+     * @param event
+     */
     @EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
+        JsonArray s;
+
+        try {
+            FileReader f = new FileReader(mainscript);
+            s = new Gson().fromJson(f, JsonArray.class);
+        } catch (JsonSyntaxException e) {
+            log(Level.ERROR, String.format("Expected to find a JSON array in %s", mainscript.getAbsolutePath()));
+            s = new JsonArray();
+        } catch (IOException e) {
+            log(Level.ERROR, "Error reading in JSON file");
+            log(Level.ERROR, e.toString());
+            s = new JsonArray();
+        }
+        log(Level.INFO, String.format("Running json script: %s", mainscript.getAbsolutePath()));
+        runJson(s);
+    }
+
+    /**
+     * Evaluate a jsonRecipeEdit script from the JsonArray
+     *
+     * @param script the JsonArray of the script to run
+     */
+    private void runJson(JsonArray script) {
         CommandRegistry cr = CommandRegistry.getInstance();
 
         //this is when we run the "script" of recipe edits
-        log(Level.INFO,"Running json script");
-        for(JsonElement e : script){
-            if(e.isJsonPrimitive()){
+        for (JsonElement e : script) {
+            if (e.isJsonPrimitive()) {
                 //assume its a comment and ignore
                 continue;
             }
-            if(e.isJsonObject()){
+            if (e.isJsonObject()) {
                 //process the object
                 JsonObject cmd = e.getAsJsonObject();
-                if(!cmd.has("command")){
-                    log(Level.ERROR,String.format("command not in entry: %s",cmd.toString()));
+                if (!cmd.has("command")) {
+                    log(Level.ERROR, String.format("command not in entry: %s", cmd.toString()));
                     continue;
                 }
-                if(!cmd.get("command").isJsonPrimitive()){
-                    log(Level.ERROR,String.format("unexpected json element in entry: %s",cmd.toString()));
+                if (!cmd.get("command").isJsonPrimitive()) {
+                    log(Level.ERROR, String.format("unexpected json element in entry: %s", cmd.toString()));
                     continue;
                 }
                 String commandName = cmd.get("command").getAsString();
-                if(cr.hasCommand(commandName)){
+
+                //first see if its the special "control" command "include"
+                if (commandName.equals("include")) {
+                    if (!cmd.get("file").isJsonPrimitive()) {
+                        log(Level.ERROR, String.format("include requires 'file' to be set: %s", cmd.toString()));
+                        continue;
+                    }
+                    String includedFile = cmd.get("file").getAsString();
+                    File ifile = new File(Minecraft.getMinecraft().mcDataDir.getAbsolutePath(), includedFile);
+
+                    if (!ifile.exists()) {
+                        log(Level.ERROR, String.format("included file %s not found, skipping", ifile.getAbsolutePath()));
+                    }
+                    try {
+                        FileReader f = new FileReader(ifile);
+                        log(Level.INFO, String.format("Running json script: %s", ifile.getAbsolutePath()));
+                        runJson(new Gson().fromJson(f, JsonArray.class));
+                    } catch (Exception err) {
+                        log(Level.ERROR, "error running json script: " + err.toString());
+                    }
+                }
+                //otherwise try to run the command from the Registry
+                else if (cr.hasCommand(commandName)) {
                     //run the command
                     try {
                         cr.getCommand(commandName).runCommand(cmd);
-                    }catch(Exception usererr){
-                        log(Level.ERROR,String.format("Error on command: %s",usererr.toString()));
-                        log(Level.ERROR,String.format("While running command: %s",cmd.toString()));
+                    } catch (Exception usererr) {
+                        log(Level.ERROR, String.format("Error on command: %s", usererr.toString()));
+                        log(Level.ERROR, String.format("While running command: %s", cmd.toString()));
                     }
+                } else {
+                    log(Level.ERROR, String.format("Unknown command: [%s] in %s", commandName, cmd.toString()));
                 }
-                else{
-                    log(Level.ERROR, String.format("Unknown command: [%s] in %s",commandName,cmd.toString()));
-                }
-            }
-            else{
+            } else {
                 //???
-                log(Level.ERROR,"Unexpected entry in json script! terminating script processing");
-                log(Level.ERROR,e.toString());
+                log(Level.ERROR, "Unexpected entry in json script! terminating script processing");
+                log(Level.ERROR, e.toString());
                 break;
             }
         }
