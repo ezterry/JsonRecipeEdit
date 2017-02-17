@@ -31,12 +31,14 @@ import com.ezrol.terry.minecraft.jsonRecipeEdit.api.CommandRegistry;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.commands.*;
 import com.google.gson.*;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.oredict.RecipeSorter;
 import org.apache.logging.log4j.Level;
 
 import java.io.File;
@@ -141,7 +143,7 @@ public class JSONRecipeEdit {
      * annotation)
      *
      *
-     * @param event
+     * @param event Forge event data
      */
     @EventHandler
     public void loadComplete(FMLLoadCompleteEvent event) {
@@ -160,6 +162,11 @@ public class JSONRecipeEdit {
         }
         log(Level.INFO, String.format("Running json script: %s", mainscript.getAbsolutePath()));
         runJson(s);
+
+        //since we might have re-sorted recipes:
+        if(ForgeModContainer.shouldSortRecipies){
+            RecipeSorter.sortCraftManager();
+        }
     }
 
     /**
