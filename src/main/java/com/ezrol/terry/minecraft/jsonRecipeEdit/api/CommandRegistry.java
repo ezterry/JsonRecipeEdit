@@ -60,7 +60,11 @@ public class CommandRegistry {
     }
 
     /**
-     * Register a new command (the name will be pulled from the IRECommand object
+     * Register a new command (the name will be pulled from the IRECommand object)
+     *
+     * For easy of readability commands can be short phrases with spaces, however if a command
+     * is related to a mod the modid ought to be included somewhere in the command.
+     *
      * @param cmd command to register
      */
     public synchronized void register(IRECommand cmd) {
@@ -79,6 +83,7 @@ public class CommandRegistry {
 
     /**
      * return true if the command 'name' has been registered
+     *
      * @param name - the command to check if exists
      * @return - true if the command exists, else false
      */
