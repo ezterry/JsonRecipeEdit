@@ -29,14 +29,15 @@ package com.ezrol.terry.minecraft.jsonRecipeEdit;
 
 import com.ezrol.terry.minecraft.jsonRecipeEdit.api.CommandRegistry;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.commands.*;
+import com.ezrol.terry.minecraft.jsonRecipeEdit.proxy.commonproxy;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.virtualcommandblock.JsonRecipeEditCommand;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.virtualcommandblock.VCommandLogic;
 import com.google.gson.*;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.oredict.RecipeSorter;
 import org.apache.logging.log4j.Level;
@@ -59,6 +60,10 @@ public class JSONRecipeEdit {
 
     private File mainscript; //the location of the main Json Script
     public static VCommandLogic commandChains;
+
+    @SidedProxy(clientSide = "com.ezrol.terry.minecraft.jsonRecipeEdit.proxy.clientproxy",
+            serverSide = "com.ezrol.terry.minecraft.jsonRecipeEdit.proxy.serverproxy")
+    public static commonproxy proxy;
 
     /**
      * output to the "log"
@@ -90,6 +95,7 @@ public class JSONRecipeEdit {
      *
      * @param event Forge event data
      */
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         log(Level.INFO, "Get JSON file");
@@ -210,7 +216,7 @@ public class JSONRecipeEdit {
                         continue;
                     }
                     String includedFile = cmd.get("file").getAsString();
-                    File ifile = new File(Minecraft.getMinecraft().mcDataDir.getAbsolutePath(), includedFile);
+                    File ifile = new File(proxy.getGameDir().getAbsolutePath(), includedFile);
 
                     if (!ifile.exists()) {
                         log(Level.ERROR, String.format("included file %s not found, skipping", ifile.getAbsolutePath()));
