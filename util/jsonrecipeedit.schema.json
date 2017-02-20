@@ -46,6 +46,10 @@
             "$ref": "#/definitions/virtualCommandChain"
           },
           {
+            "title": "Block Drops",
+            "$ref": "#/definitions/blockdrops"
+          },
+          {
             "title": "Hide in JEI",
             "$ref": "#/definitions/hideInJEI"
           }
@@ -384,6 +388,75 @@
         "trigger",
         "command",
         "chain"
+      ],
+      "additionalProperties": false
+    },
+    "blockdrops": {
+      "properties": {
+        "command": {
+          "enum": [
+            "block drops"
+          ]
+        },
+        "droporiginal": {
+          "type": "boolean",
+          "description": "To keep the original drops for the block or not default=true"
+        },
+        "dropone": {
+          "type": "boolean",
+          "description": "Drop one item from the weighted list, (otherwise odds of each item are seperate) default=false"
+        },
+        "fortunemultiplier": {
+          "type": "number",
+          "description": "if dropone=false, multiply each entry by this number for each level of fortune default 1.10"
+        },
+        "dropchance":{
+          "type": "number",
+          "description": "chance of collected items are dropped 1.0 = 100%, default = blocks default rate"
+        },
+        "drops":{
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "count":{
+                    "type": "integer",
+                    "description": "size of the item stack default=1"
+                  },
+                  "item":{
+                    "description": "Item entry",
+                    "$ref": "#/definitions/item array"
+                  },
+                  "weight":{
+                    "type":"number",
+                    "description":"Weight of the item, if dropone=false: 1.0 = 100% drop, else is used as a weight with all other entries"
+                  }
+                },
+                "required": [
+                  "item",
+                  "weight"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "description": "list of possible drops and odds"
+        },
+        "block":{
+          "type": "string",
+          "description": "block that was broken <modid>:<blockname>"
+        },
+        "meta":{
+          "type": "string",
+          "description": "blockstate of the block being broken default: \"\""
+        }
+      },
+      "required": [
+        "command",
+        "block",
+        "drops"
       ],
       "additionalProperties": false
     }
