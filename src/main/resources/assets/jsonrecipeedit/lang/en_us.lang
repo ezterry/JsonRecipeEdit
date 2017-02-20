@@ -1,0 +1,8 @@
+commands.jsonrecipeedit.onsetsuccess=Tag set: %s
+commands.jsonrecipeedit.onclearsuccess=Tag cleared: %s
+commands.jsonrecipeedit.onsetfail=Tag was already set
+commands.jsonrecipeedit.onclearfail=Tag was already cleared
+commands.jsonrecipeedit.testtagset=Tag is set
+commands.jsonrecipeedit.testtagclear=Tag is cleared
+commands.jsonrecipeedit.taglist=The current active tags: %s
+commands.jsonrecipeedit.badformat=Expected 2 arguments: \n%s

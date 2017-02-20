@@ -29,15 +29,15 @@ package com.ezrol.terry.minecraft.jsonRecipeEdit;
 
 import com.ezrol.terry.minecraft.jsonRecipeEdit.api.CommandRegistry;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.commands.*;
+import com.ezrol.terry.minecraft.jsonRecipeEdit.virtualcommandblock.JsonRecipeEditCommand;
+import com.ezrol.terry.minecraft.jsonRecipeEdit.virtualcommandblock.VCommandLogic;
 import com.google.gson.*;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.oredict.RecipeSorter;
 import org.apache.logging.log4j.Level;
 
@@ -51,13 +51,14 @@ import java.io.IOException;
         modid = JSONRecipeEdit.MODID,
         version = JSONRecipeEdit.VERSION,
         acceptedMinecraftVersions = "[1.11.2,1.11.9]",
-        dependencies = "before:jei;required-after:forge@[13.20.0.2227,)"
+        dependencies = "before:jei;required-after:forge@[13.20.0.2228,)"
 )
 public class JSONRecipeEdit {
     public static final String MODID = "jsonrecipeedit";
     public static final String VERSION = "${version}";
 
     private File mainscript; //the location of the main Json Script
+    public static VCommandLogic commandChains;
 
     /**
      * output to the "log"
@@ -132,7 +133,12 @@ public class JSONRecipeEdit {
         cr.register(new RegisterOre());
         cr.register(new DeleteFurnace());
         cr.register(new AddFurnace());
+        cr.register(new VirtualCommandChain());
+
         cr.register(new HideInJEI());
+
+        //init virtual command chains
+        commandChains = new VCommandLogic();
     }
 
     /**
@@ -235,5 +241,16 @@ public class JSONRecipeEdit {
                 break;
             }
         }
+    }
+
+    @EventHandler
+    public void serverStop(FMLServerStoppedEvent event) {
+        commandChains.runServerUnload();
+    }
+
+    @EventHandler
+    public void serverStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new JsonRecipeEditCommand());
+        commandChains.initTags(event.getServer().worldServerForDimension(0));
     }
 }

@@ -42,6 +42,10 @@
             "$ref": "#/definitions/addFurnace"
           },
           {
+            "title": "Virtual Command Chain",
+            "$ref": "#/definitions/virtualCommandChain"
+          },
+          {
             "title": "Hide in JEI",
             "$ref": "#/definitions/hideInJEI"
           }
@@ -325,6 +329,63 @@
       ],
       "minItems": 1,
       "maxItems": 3
+    },
+    "virtualCommandChain": {
+      "properties": {
+        "command": {
+          "enum": [
+            "virtual command chain"
+          ]
+        },
+        "trigger": {
+          "type": "string",
+          "pattern": "^(Always|PlayerJoin|ServerStart|OnSet:\\ .*|OnClear:\\ .*|Run:\\ .*)$",
+          "description": "The trigger when this command chain is to be ran"
+        },
+        "dim": {
+          "description": "The dimention to run on, use \"*\" to run on all/any loaded dimention, default \"*\"",
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string",
+              "pattern": "^(-[0-9]+|[0-9]+|\\*)$"
+            }
+          ]
+        },
+        "filter": {
+          "description": "Filter criteria (see docs) default \"\"",
+          "type": "string"
+        },
+        "log": {
+          "type": "boolean",
+          "description": "if we log output or not, useful for debugging but otherwise spams the log, default: false"
+        },
+        "name": {
+          "type": "string",
+          "description": "name of the command chain (displayed in server/log messages from the commands, default \"VCommandChain\""
+        },
+        "chain":{
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "string",
+                "description": "the system (command block) command to run"
+              }
+            ]
+          },
+          "minItems": 1
+        }
+
+      },
+      "required": [
+        "trigger",
+        "command",
+        "chain"
+      ],
+      "additionalProperties": false
     }
   }
 }
