@@ -263,51 +263,6 @@
       ],
       "additionalProperties": false
     },
-    "recipe ingredients": {
-      "patternProperties": {
-        "^[a-z]$": {
-          "oneOf": [
-            {
-              "description": "Ore dictionary entry",
-              "type": "string"
-            },
-            {
-              "description": "Item entry",
-              "$ref": "#/definitions/item array"
-            }
-          ]
-        }
-      },
-      "additionalProperties": false
-    },
-    "item array": {
-      "type": "array",
-      "items": [
-        {
-          "type": "string",
-          "description": "item (modid:name)"
-        },
-        {
-          "oneOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "enum": [
-                "*"
-              ]
-            }
-          ],
-          "description": "input meta (default=0)"
-        },
-        {
-          "type": "string",
-          "description": "nbt data"
-        }
-      ],
-      "minItems": 1,
-      "maxItems": 3
-    },
     "virtualCommandChain": {
       "properties": {
         "command": {
@@ -433,6 +388,51 @@
         "drops"
       ],
       "additionalProperties": false
+    },
+    "recipe ingredients": {
+      "patternProperties": {
+        "^[a-z]$": {
+          "oneOf": [
+            {
+              "description": "Ore dictionary entry",
+              "type": "string"
+            },
+            {
+              "description": "Item entry",
+              "$ref": "#/definitions/item array"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "item array": {
+      "type": "array",
+      "items": [
+        {
+          "type": "string",
+          "description": "item (modid:name)"
+        },
+        {
+          "oneOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "enum": [
+                "*"
+              ]
+            }
+          ],
+          "description": "input meta (default=0)"
+        },
+        {
+          "type": "string",
+          "description": "nbt data"
+        }
+      ],
+      "minItems": 1,
+      "maxItems": 3
     }
   }
 }
