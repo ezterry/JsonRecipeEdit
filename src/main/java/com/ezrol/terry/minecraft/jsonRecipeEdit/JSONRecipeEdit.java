@@ -141,6 +141,7 @@ public class JSONRecipeEdit {
         cr.register(new AddFurnace());
         cr.register(new VirtualCommandChain());
         cr.register(new BlockDrops());
+        cr.register(new AddFuel());
 
         cr.register(new HideInJEI());
 

@@ -52,6 +52,10 @@
           {
             "title": "Hide in JEI",
             "$ref": "#/definitions/hideInJEI"
+          },
+          {
+            "title": "Add item as Fuel",
+            "$ref": "#/definitions/addfuelitem"
           }
         ]
       }
@@ -386,6 +390,29 @@
         "command",
         "block",
         "drops"
+      ],
+      "additionalProperties": false
+    },
+    "addfuelitem":{
+      "properties": {
+        "command": {
+          "enum": [
+            "add fuel item"
+          ]
+        },
+        "item":{
+          "description": "Item entry",
+          "$ref": "#/definitions/item array"
+        },
+        "burntime":{
+          "description": "burn time",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "command",
+        "item",
+        "burntime"
       ],
       "additionalProperties": false
     },
