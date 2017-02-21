@@ -83,22 +83,9 @@
             "delete recipe"
           ]
         },
-        "item": {
-          "description": "In Game item usually: <modid>:<item name>",
-          "type": "string"
-        },
-        "meta": {
-          "oneOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "enum": [
-                "*"
-              ]
-            }
-          ],
-          "description": "ingredient id (default=0)"
+        "item":{
+          "description": "Item entry",
+          "$ref": "#/definitions/item array"
         }
       },
       "required": [
@@ -216,22 +203,9 @@
             "delete furnace"
           ]
         },
-        "item": {
-          "description": "In Game item usually: <modid>:<item name>",
-          "type": "string"
-        },
-        "meta": {
-          "oneOf": [
-            {
-              "type": "integer"
-            },
-            {
-              "enum": [
-                "*"
-              ]
-            }
-          ],
-          "description": "ingredient id (default=0)"
+        "item":{
+          "description": "Item entry",
+          "$ref": "#/definitions/item array"
         }
       },
       "required": [

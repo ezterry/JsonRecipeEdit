@@ -34,6 +34,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
+import org.apache.logging.log4j.Level;
 
 import java.lang.reflect.Field;
 import java.util.LinkedList;
@@ -83,28 +84,39 @@ public class DeleteFurnace extends GenericCommand {
 
         ResourceLocation itemname;
         int meta=0;
+        ItemStack testitem;
 
-        itemname = new ResourceLocation(command.get("item").getAsString());
-        if(command.has("meta")){
-            if(command.get("meta").getAsJsonPrimitive().isString() &&
-                    command.get("meta").getAsJsonPrimitive().getAsString().equals("*")){
-                meta = OreDictionary.WILDCARD_VALUE;
-            }
-            else {
-                meta = command.get("meta").getAsNumber().intValue();
-            }
+        if(command.get("item").isJsonArray()){
+            //new format use json array
+            testitem=getItemFromArray(command.get("item").getAsJsonArray(),1);
         }
+        else {
+            log(Level.WARN,String.format("item in deprecated format, use new json array format: %s",command.toString()));
+            itemname = new ResourceLocation(command.get("item").getAsString());
+            if (command.has("meta")) {
+                if (command.get("meta").getAsJsonPrimitive().isString() &&
+                        command.get("meta").getAsJsonPrimitive().getAsString().equals("*")) {
+                    meta = OreDictionary.WILDCARD_VALUE;
+                } else {
+                    meta = command.get("meta").getAsNumber().intValue();
+                }
+            }
 
-        //get the item stack item+meta
-        Item item = ForgeRegistries.ITEMS.getValue(itemname);
-        if(item == null){
-            error(String.format("Unable to load item %s in command: %s",itemname.toString(),command.toString()));
+            //get the item stack item+meta
+            Item item = ForgeRegistries.ITEMS.getValue(itemname);
+            if (item == null) {
+                error(String.format("Unable to load item %s in command: %s", itemname.toString(), command.toString()));
+                return;
+            }
+
+            //noinspection ConstantConditions
+            testitem = new ItemStack(ForgeRegistries.ITEMS.getValue(itemname), 1, meta);
+        }
+        if(testitem == null){
+            error(String.format("Item not found: %s",command.get("item").toString()));
             return;
         }
-
-        @SuppressWarnings("ConstantConditions")
-        ItemStack testitem = new ItemStack(ForgeRegistries.ITEMS.getValue(itemname), 1, meta);
-
+        meta = testitem.getMetadata();
         try {
             @SuppressWarnings({"unchecked"})
             Map<ItemStack, ItemStack> list = (Map<ItemStack, ItemStack>) smeltingList.get(furnace);
