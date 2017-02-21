@@ -56,6 +56,10 @@
           {
             "title": "Add item as Fuel",
             "$ref": "#/definitions/addfuelitem"
+          },
+          {
+            "title": "Edit Block",
+            "$ref": "#/definitions/editblock"
           }
         ]
       }
@@ -413,6 +417,68 @@
         "command",
         "item",
         "burntime"
+      ],
+      "additionalProperties": false
+    },
+    "editblock":{
+      "properties": {
+        "command": {
+          "enum": [
+            "edit block"
+          ]
+        },
+        "block":{
+          "description": "Item entry",
+          "type": "string"
+        },
+        "hardness":{
+          "description": "The block hardness default: current value",
+          "type": "number"
+        },
+        "resistance":{
+          "description": "The block resistance default: current value",
+          "type": "number"
+        },
+        "unbreakable":{
+          "description": "if true make unbreakable, else current state, to make breakable set hardness",
+          "type": "boolean"
+        },
+        "harvestlevel":{
+          "description": "The blocks harvest tool/level: default: current value",
+          "type": "array",
+          "items": [
+            {
+              "type": "string",
+              "description": "tool name"
+            },
+            {
+              "type": "integer",
+              "description": "tool level"
+            }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "unlocalizedname":{
+          "description": "The untranslated name of the block default: current value",
+          "type": "string"
+        },
+        "lightlevel":{
+          "description": "The light level of the block default: current value",
+          "type": "number"
+        },
+        "lightopacity":{
+          "description": "The light level of the block default: current value",
+          "type": "integer"
+        },
+        "slipperiness":{
+          "description": "The slipperiness of the block default: current value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "command",
+        "block"
       ],
       "additionalProperties": false
     },
