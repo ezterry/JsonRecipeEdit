@@ -60,6 +60,10 @@
           {
             "title": "Edit Block",
             "$ref": "#/definitions/editblock"
+          },
+          {
+            "title": "Edit Item",
+            "$ref": "#/definitions/edititem"
           }
         ]
       }
@@ -479,6 +483,56 @@
       "required": [
         "command",
         "block"
+      ],
+      "additionalProperties": false
+    },
+    "edititem":{
+      "properties": {
+        "command": {
+          "enum": [
+            "edit item"
+          ]
+        },
+        "itemname": {
+          "description": "Item name",
+          "type": "string"
+        },
+        "harvestlevel": {
+          "description": "The blocks harvest tool/level: default: current value",
+          "type": "array",
+          "items": [
+            {
+              "type": "string",
+              "description": "tool name"
+            },
+            {
+              "type": "integer",
+              "description": "tool level"
+            }
+          ],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "unlocalizedname": {
+          "description": "The untranslated name of the block default: current value",
+          "type": "string"
+        },
+        "maxdamage": {
+          "description": "the maximum dammage a tool can have default: current value",
+          "type": "integer"
+        },
+        "norepair":{
+          "description": "if true prevent the item from being repaired false/omitted keep current value",
+          "type": "boolean"
+        },
+        "maxstack": {
+          "description": "the maximum stack size of this item default: current value",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "command",
+        "itemname"
       ],
       "additionalProperties": false
     },

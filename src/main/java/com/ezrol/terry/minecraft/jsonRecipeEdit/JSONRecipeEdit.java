@@ -143,6 +143,7 @@ public class JSONRecipeEdit {
         cr.register(new BlockDrops());
         cr.register(new AddFuel());
         cr.register(new EditBlock());
+        cr.register(new EditItem());
 
         cr.register(new HideInJEI());
 
