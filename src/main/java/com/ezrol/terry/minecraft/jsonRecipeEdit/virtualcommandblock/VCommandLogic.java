@@ -29,6 +29,7 @@ package com.ezrol.terry.minecraft.jsonRecipeEdit.virtualcommandblock;
 
 import com.ezrol.terry.minecraft.jsonRecipeEdit.JSONRecipeEdit;
 import net.minecraft.command.ICommandManager;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -51,6 +52,7 @@ public class VCommandLogic {
     HashMap<String,LinkedList<VCommandSet>> commandTable; //commands trigger -> list of command sets
     boolean loaded;
     private VCommandTagData tags;
+    LinkedList<EntityPlayer> newPlayerEvent;
 
     public VCommandLogic(){
         loaded=false;
@@ -58,6 +60,7 @@ public class VCommandLogic {
         commandTable = new HashMap<>();
         tags=new VCommandTagData();
         cmdManager=null;
+        newPlayerEvent=new LinkedList<>();
     }
 
     public boolean addCommand(VCommandSet c){
@@ -115,13 +118,15 @@ public class VCommandLogic {
 
     public void runServerUnload() {
         this.worldLoaded = false;
+        cmdManager=null;
+        newPlayerEvent.clear();
         JSONRecipeEdit.log(Level.INFO,"World Unload");
     }
 
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onServerWorldTick(TickEvent.WorldTickEvent event){
-        if(event.phase == TickEvent.Phase.END){
+        if(event.phase != TickEvent.Phase.END){
             return;
         }
         if(event.type != TickEvent.Type.WORLD){
@@ -135,6 +140,14 @@ public class VCommandLogic {
             runServerLoad(event.world);
         }
         else{
+            if(newPlayerEvent.size() > 0){
+                EntityPlayer p = newPlayerEvent.getFirst();
+
+                if(p.dimension == dim) {
+                    newPlayerEvent.removeFirst();
+                    runTrigger("PlayerJoin", event.world);
+                }
+            }
             runTrigger("Always",event.world);
         }
     }
@@ -142,7 +155,8 @@ public class VCommandLogic {
     @SubscribeEvent
     @SuppressWarnings("unused")
     public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event){
-        World w = event.player.getEntityWorld();
-        runTrigger("PlayerJoin",w);
+        JSONRecipeEdit.log(Level.INFO,String.format("Player %s Joined in dim %d",
+                event.player.getName(),event.player.dimension));
+        newPlayerEvent.addLast(event.player);
     }
 }
