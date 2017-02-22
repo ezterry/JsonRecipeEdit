@@ -64,6 +64,10 @@
           {
             "title": "Edit Item",
             "$ref": "#/definitions/edititem"
+          },
+          {
+            "title": "Batch Update",
+            "$ref": "#/definitions/batchupdate"
           }
         ]
       }
@@ -518,7 +522,7 @@
           "type": "string"
         },
         "maxdamage": {
-          "description": "the maximum dammage a tool can have default: current value",
+          "description": "the maximum damage a tool can have default: current value",
           "type": "integer"
         },
         "norepair":{
@@ -533,6 +537,36 @@
       "required": [
         "command",
         "itemname"
+      ],
+      "additionalProperties": false
+    },
+    "batchupdate":{
+      "properties": {
+        "command": {
+          "enum": [
+            "batch update"
+          ]
+        },
+        "type": {
+          "description": "The batch operation to perform",
+          "enum": [
+            "stack size",
+            "tool damage"
+          ]
+        },
+        "to":{
+          "description": "The new value to set the items to",
+          "type": "integer"
+        },
+        "from": {
+          "description": "The original value to change (default: -1 to change make 'to' the new maximum)",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "command",
+        "type",
+        "to"
       ],
       "additionalProperties": false
     },

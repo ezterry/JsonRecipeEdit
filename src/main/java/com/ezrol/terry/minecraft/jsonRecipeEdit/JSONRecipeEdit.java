@@ -33,6 +33,7 @@ import com.ezrol.terry.minecraft.jsonRecipeEdit.proxy.commonproxy;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.virtualcommandblock.JsonRecipeEditCommand;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.virtualcommandblock.VCommandLogic;
 import com.google.gson.*;
+import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
@@ -144,6 +145,7 @@ public class JSONRecipeEdit {
         cr.register(new AddFuel());
         cr.register(new EditBlock());
         cr.register(new EditItem());
+        cr.register(new BatchUpdate());
 
         cr.register(new HideInJEI());
 
@@ -262,5 +264,11 @@ public class JSONRecipeEdit {
     public void serverStarting(FMLServerStartingEvent event) {
         event.registerServerCommand(new JsonRecipeEditCommand());
         commandChains.initTags(event.getServer().worldServerForDimension(0));
+    }
+
+    @EventHandler
+    public void preServerStart(FMLServerAboutToStartEvent event){
+        IntegratedServer server = (IntegratedServer) event.getServer();
+        log(Level.INFO,server.getName());
     }
 }
