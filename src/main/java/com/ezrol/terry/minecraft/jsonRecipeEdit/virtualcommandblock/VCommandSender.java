@@ -107,8 +107,10 @@ public class VCommandSender implements ICommandSender {
 
     @Override
     @SuppressWarnings("NullableProblems")
-    public Vec3d getPositionVector() {
-        return new Vec3d(0.0,0.0,0.0);
+    public Vec3d getPositionVector()
+    {
+        BlockPos pos = getPosition();
+        return new Vec3d((double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D);
     }
 
     @Override
