@@ -28,12 +28,16 @@
 package com.ezrol.terry.minecraft.jsonRecipeEdit.integration;
 
 import com.ezrol.terry.minecraft.jsonRecipeEdit.JSONRecipeEdit;
+import com.ezrol.terry.minecraft.jsonRecipeEdit.commands.AnvilCraft;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.commands.HideInJEI;
 import mezz.jei.api.*;
 import mezz.jei.api.ingredients.IIngredientBlacklist;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
 import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.Level;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Our integration with the JEI Plugin
@@ -52,15 +56,30 @@ public class JEIIntegration implements IModPlugin {
 
     }
 
+    private void loadAnvilRecipes(IModRegistry registry){
+        List<AnvilCraft.CraftEntry> entries = AnvilCraft.getEntries();
+
+        for(AnvilCraft.CraftEntry e : entries) {
+            List<ItemStack> right = new ArrayList<>();
+            List<ItemStack> output = new ArrayList<>();
+            right.add(e.modifier);
+            output.add(e.result);
+            registry.addAnvilRecipe(e.originalItem,right,output);
+        }
+    }
+
     @Override
     public void register(IModRegistry registry) {
-        JSONRecipeEdit.log(Level.INFO,"Hiding items from JEI");
+        JSONRecipeEdit.log(Level.INFO,"(JEI): Hiding items");
 
         IIngredientBlacklist blacklist = registry.getJeiHelpers().getIngredientBlacklist();
 
         for(ItemStack i : HideInJEI.getItemList()){
             blacklist.addIngredientToBlacklist(i);
         }
+
+        JSONRecipeEdit.log(Level.INFO,"(JEI) Adding any anvil recipes");
+        loadAnvilRecipes(registry);
     }
 
     @Override

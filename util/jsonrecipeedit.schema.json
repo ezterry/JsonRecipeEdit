@@ -68,6 +68,10 @@
           {
             "title": "Batch Update",
             "$ref": "#/definitions/batchupdate"
+          },
+          {
+            "title": "Anvil Crafting",
+            "$ref": "#/definitions/anvilcraft"
           }
         ]
       }
@@ -567,6 +571,47 @@
         "command",
         "type",
         "to"
+      ],
+      "additionalProperties": false
+    },
+    "anvilcraft":{
+      "properties": {
+        "command": {
+          "enum": [
+            "anvil craft recipe"
+          ]
+        },
+        "original": {
+          "description": "Starting item (left slot)",
+          "$ref": "#/definitions/item array"
+        },
+        "modifier": {
+          "description": "Item to modify/repair with (right slot)",
+          "$ref": "#/definitions/item array"
+        },
+        "modifiercount": {
+          "description": "Number of modifier items to consume per craft",
+          "type": "integer"
+        },
+        "result": {
+          "description": "Item to be returned (output)",
+          "$ref": "#/definitions/item array"
+        },
+        "count": {
+          "description": "Number of items to return per craft",
+          "type": "integer"
+        },
+        "levels": {
+          "description": "Cost in levels of the craft",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "command",
+        "original",
+        "modifier",
+        "result",
+        "levels"
       ],
       "additionalProperties": false
     },
