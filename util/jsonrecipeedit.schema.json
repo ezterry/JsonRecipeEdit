@@ -106,6 +106,10 @@
         "item":{
           "description": "Item entry",
           "$ref": "#/definitions/item array"
+        },
+        "count":{
+          "description": "if not set to -1 (default) only remove recipes that return a stack of this many items per craft",
+          "type": "integer"
         }
       },
       "required": [

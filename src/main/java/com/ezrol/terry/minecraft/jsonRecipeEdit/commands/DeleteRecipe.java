@@ -56,6 +56,7 @@ public class DeleteRecipe extends GenericCommand{
         ResourceLocation itemname;
         int meta=0;
         ItemStack testitem;
+        int size=-1;
 
         if(command.get("item").isJsonArray()){
             //new format use json array
@@ -87,6 +88,11 @@ public class DeleteRecipe extends GenericCommand{
             error(String.format("Item not found: %s",command.get("item").toString()));
             return;
         }
+
+        if(command.has("count")){
+            size = command.get("count").getAsInt();
+        }
+
         meta = testitem.getMetadata();
         List<IRecipe> recipeList=CraftingManager.getInstance().getRecipeList();
         int index = 0;
@@ -94,10 +100,14 @@ public class DeleteRecipe extends GenericCommand{
 
         for(IRecipe cur : recipeList){
             if(meta == OreDictionary.WILDCARD_VALUE && cur.getRecipeOutput().getItem().equals(testitem.getItem())){
-                todelete.addFirst(index);
+                if(size == -1 || size == cur.getRecipeOutput().getCount()) {
+                    todelete.addFirst(index);
+                }
             }
             else if(cur.getRecipeOutput().isItemEqual(testitem)){
-                todelete.addFirst(index);
+                if(size == -1 || size == cur.getRecipeOutput().getCount()) {
+                    todelete.addFirst(index);
+                }
             }
             index ++;
         }
