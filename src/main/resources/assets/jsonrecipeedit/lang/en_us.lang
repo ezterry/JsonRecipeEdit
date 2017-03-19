@@ -6,3 +6,4 @@ commands.jsonrecipeedit.testtagset=Tag is set
 commands.jsonrecipeedit.testtagclear=Tag is cleared
 commands.jsonrecipeedit.taglist=The current active tags: %s
 commands.jsonrecipeedit.badformat=Expected 2 arguments: \n%s
+commands.jsonrecipeedit.nocommandprovided=Expected one or more chains to run

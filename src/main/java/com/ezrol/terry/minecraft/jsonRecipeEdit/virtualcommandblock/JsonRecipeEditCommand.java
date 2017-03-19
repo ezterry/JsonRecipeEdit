@@ -61,13 +61,13 @@ public class JsonRecipeEditCommand extends CommandBase {
     @SuppressWarnings("NullableProblems")
     @Override
     public String getUsage(ICommandSender sender) {
-        return "jsonRecipeEdit <set|clear|test|run|list> <name of tag/run>";
+        return "jsonRecipeEdit <set|clear|test|run|list|runone> <name of tag/run>";
     }
 
     @SuppressWarnings("NullableProblems")
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args.length != 2 && (args.length != 1 || !args[0].equals("list"))) {
+        if (args.length != 2 && (args.length != 1 || !args[0].equals("list")) && !args[0].equals("runone")) {
             throw new WrongUsageException("commands.jsonrecipeedit.badformat", getUsage(sender));
         }
         World w = sender.getEntityWorld();
@@ -103,6 +103,19 @@ public class JsonRecipeEditCommand extends CommandBase {
                 //list all tags
                 notifyCommandListener(sender,this,"commands.jsonrecipeedit.taglist",
                         JSONRecipeEdit.commandChains.getTags().getList().toString());
+                break;
+            case "runone":
+                //run one of the listed commands
+                if(args.length > 1){
+                    String cmd = args[server.getEntityWorld().rand.nextInt(args.length-1)+1];
+                    if (sender.sendCommandFeedback()) {
+                        JSONRecipeEdit.log(Level.INFO, String.format("attempting to run randomly selected \"%s\" command chains by %s", cmd, sender.getName()));
+                    }
+                    JSONRecipeEdit.commandChains.runTrigger(String.format("Run: %s", cmd), w);
+                }
+                else{
+                    throw new CommandException("commands.jsonrecipeedit.nocommandprovided");
+                }
                 break;
             default:
                 throw new WrongUsageException("commands.jsonrecipeedit.badformat", getUsage(sender));
