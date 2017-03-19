@@ -36,7 +36,6 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.Level;
@@ -116,6 +115,7 @@ public class ToolCrafting extends GenericCommand {
         private ItemStack output;
         private ItemStack tool;
         private Object[] input;
+        private static Random rand = new Random();
 
         ShapelessToolCrafting(@Nonnull ItemStack result,
                               @Nonnull ItemStack tool,
@@ -272,7 +272,7 @@ public class ToolCrafting extends GenericCommand {
                     }
                     else{
                         updatedTool=itm.copy();
-                        if(updatedTool.attemptDamageItem(1, FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld().rand)){
+                        if(updatedTool.attemptDamageItem(1, rand)){
                             updatedTool=ItemStack.EMPTY;
                         }
                         index=i;
