@@ -30,9 +30,21 @@ package com.ezrol.terry.minecraft.jsonRecipeEdit.integration;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.JSONRecipeEdit;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.commands.AnvilCraft;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.commands.HideInJEI;
-import mezz.jei.api.*;
+import com.ezrol.terry.minecraft.jsonRecipeEdit.commands.ToolCrafting;
+import mezz.jei.api.IJeiHelpers;
+import mezz.jei.api.IJeiRuntime;
+import mezz.jei.api.IModPlugin;
+import mezz.jei.api.IModRegistry;
+import mezz.jei.api.ISubtypeRegistry;
+import mezz.jei.api.JEIPlugin;
 import mezz.jei.api.ingredients.IIngredientBlacklist;
+import mezz.jei.api.ingredients.IIngredients;
 import mezz.jei.api.ingredients.IModIngredientRegistration;
+import mezz.jei.api.recipe.BlankRecipeWrapper;
+import mezz.jei.api.recipe.IRecipeHandler;
+import mezz.jei.api.recipe.IRecipeWrapper;
+import mezz.jei.api.recipe.IStackHelper;
+import mezz.jei.api.recipe.VanillaRecipeCategoryUid;
 import net.minecraft.item.ItemStack;
 import org.apache.logging.log4j.Level;
 
@@ -70,6 +82,9 @@ public class JEIIntegration implements IModPlugin {
 
     @Override
     public void register(IModRegistry registry) {
+
+        registry.addRecipeHandlers(new ShapelessToolCraftingHandler(registry.getJeiHelpers()));
+
         JSONRecipeEdit.log(Level.INFO,"(JEI): Hiding items");
 
         IIngredientBlacklist blacklist = registry.getJeiHelpers().getIngredientBlacklist();
@@ -85,5 +100,69 @@ public class JEIIntegration implements IModPlugin {
     @Override
     public void onRuntimeAvailable(IJeiRuntime jeiRuntime) {
 
+    }
+
+    static private class ShapelessToolCraftingWrapper extends BlankRecipeWrapper
+    {
+        private final IJeiHelpers jeiHelpers;
+        private final ToolCrafting.ShapelessToolCrafting recipe;
+
+        private ShapelessToolCraftingWrapper(IJeiHelpers h, ToolCrafting.ShapelessToolCrafting r){
+            super();
+            jeiHelpers = h;
+            recipe = r;
+        }
+
+        @Override
+        public void getIngredients(IIngredients ingredients) {
+            IStackHelper stackHelper = jeiHelpers.getStackHelper();
+            ItemStack recipeOutput = recipe.getRecipeOutput();
+
+            try {
+                List<List<ItemStack>> inputs = stackHelper.expandRecipeItemStackInputs(recipe.jeiGetInputs());
+                ingredients.setInputLists(ItemStack.class, inputs);
+                if (recipeOutput != null) {
+                    ingredients.setOutput(ItemStack.class, recipeOutput);
+                }
+            }
+            catch (RuntimeException e) {
+                JSONRecipeEdit.log(Level.ERROR,"(JEI) Error processing Recipe for: " + recipeOutput.toString());
+                throw(e);
+            }
+        }
+
+        @Override
+        public List<String> getTooltipStrings(int mouseX, int mouseY) {
+            return super.getTooltipStrings(mouseX, mouseY);
+        }
+    }
+
+    static private class ShapelessToolCraftingHandler implements IRecipeHandler<ToolCrafting.ShapelessToolCrafting>
+    {
+        private final IJeiHelpers jeiHelpers;
+
+        private ShapelessToolCraftingHandler(IJeiHelpers h){
+            jeiHelpers=h;
+        }
+
+        @Override
+        public Class<ToolCrafting.ShapelessToolCrafting> getRecipeClass() {
+            return ToolCrafting.ShapelessToolCrafting.class;
+        }
+
+        @Override
+        public String getRecipeCategoryUid(ToolCrafting.ShapelessToolCrafting recipe) {
+            return VanillaRecipeCategoryUid.CRAFTING;
+        }
+
+        @Override
+        public IRecipeWrapper getRecipeWrapper(ToolCrafting.ShapelessToolCrafting recipe) {
+            return new ShapelessToolCraftingWrapper(jeiHelpers,recipe);
+        }
+
+        @Override
+        public boolean isRecipeValid(ToolCrafting.ShapelessToolCrafting recipe) {
+            return recipe.jeiIsValid();
+        }
     }
 }

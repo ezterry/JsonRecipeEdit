@@ -112,7 +112,7 @@ public class ToolCrafting extends GenericCommand {
         GameRegistry.addRecipe(shapelessRecipe);
     }
 
-    private static class ShapelessToolCrafting implements IRecipe {
+    public static class ShapelessToolCrafting implements IRecipe {
         private ItemStack output;
         private ItemStack tool;
         private Object[] input;
@@ -286,6 +286,37 @@ public class ToolCrafting extends GenericCommand {
             r.set(index,updatedTool);
 
             return r;
+        }
+        public List jeiGetInputs(){
+            List<Object> r = new LinkedList<>();
+            r.add(tool);
+            Collections.addAll(r, input);
+            return r;
+        }
+        public boolean jeiIsValid(){
+            if(output == null){
+                JSONRecipeEdit.log(Level.ERROR,"JEI Invalid: No Recipe Output");
+                return false;
+            }
+            if(tool == null){
+                JSONRecipeEdit.log(Level.ERROR,"JEI Invalid: Tool not defined for " + output.toString());
+                return false;
+            }
+            if(input.length > 8){
+                JSONRecipeEdit.log(Level.ERROR,"JEI Invalid: too many items in recipe " + output.toString());
+                return false;
+            }
+            for(Object i : input){
+                if(i == null){
+                    JSONRecipeEdit.log(Level.ERROR,"JEI Invalid: null input for " + output.toString());
+                    return false;
+                }
+                if(i instanceof List && ((List)i).size() == 0){
+                    JSONRecipeEdit.log(Level.ERROR,"JEI Invalid: Empty Ore Dictionary " + output.toString());
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

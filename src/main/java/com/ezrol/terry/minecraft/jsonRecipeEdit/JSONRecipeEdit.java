@@ -38,7 +38,11 @@ import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 import net.minecraftforge.oredict.RecipeSorter;
 import org.apache.logging.log4j.Level;
 
@@ -46,6 +50,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 @Mod(
@@ -184,6 +190,8 @@ public class JSONRecipeEdit {
 
         //since we might have re-sorted recipes:
         if(ForgeModContainer.shouldSortRecipies){
+            RecipeSorter.register("jsonrecipeedit:toolcrafting", ToolCrafting.ShapelessToolCrafting.class,
+                    SHAPELESS, "after:minecraft:shapeless");
             RecipeSorter.sortCraftManager();
         }
     }
