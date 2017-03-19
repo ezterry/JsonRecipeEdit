@@ -72,6 +72,10 @@
           {
             "title": "Anvil Crafting",
             "$ref": "#/definitions/anvilcraft"
+          },
+          {
+            "title": "Tool Crafting",
+            "$ref": "#/definitions/toolCraftingRecipe"
           }
         ]
       }
@@ -616,6 +620,39 @@
         "modifier",
         "result",
         "levels"
+      ],
+      "additionalProperties": false
+    },
+    "toolCraftingRecipe": {
+      "properties": {
+        "command": {
+          "enum": [
+            "tool crafting"
+          ]
+        },
+        "ingredients": {
+          "description": "shapeless tool crafting recipe",
+          "type": "object",
+          "$ref": "#/definitions/recipe ingredients"
+        },
+        "count": {
+          "description": "size of the item stack to return [default = 1]",
+          "type": "integer"
+        },
+        "result": {
+          "description": "Item to craft",
+          "$ref": "#/definitions/item array"
+        },
+        "tool": {
+          "description": "Tool to craft the item with",
+          "$ref": "#/definitions/item array"
+        }
+      },
+      "required": [
+        "command",
+        "ingredients",
+        "result",
+        "tool"
       ],
       "additionalProperties": false
     },

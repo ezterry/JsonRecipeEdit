@@ -146,6 +146,7 @@ public class JSONRecipeEdit {
         cr.register(new EditItem());
         cr.register(new BatchUpdate());
         cr.register(new AnvilCraft());
+        cr.register(new ToolCrafting());
 
         cr.register(new HideInJEI());
 
