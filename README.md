@@ -3,7 +3,7 @@ A Json based recipe editor (and tweaker)
 
 ## Introduction ##
 
-JSON Recipe Edit is a Minecraft intended to provide
+JSON Recipe Edit is a Minecraft mod intended to provide
 a way for modpack creators to customize many elements
 of their pack.
 
@@ -12,17 +12,13 @@ makes, this file is called the json script and is
 evaluated after all mods are initialized.
 
 Here many types of tweaks are possible such as updating
-recipes and other parameters.  In many ways this makes
-JSON Recipe Editor a mod related to minetweaker / 
-crafttweaker, however with a different runtime, and 
-no way to reload once the world is loaded, means some
-things possible in this mod can't be done in minetweaker,
-and some things in minetweaker can't be done in this mod.
-
-In addition of the reasons for this mod is to have a
-simple way of updating recipes without waiting for
-minetweaker and/or clones to update the the newest
-versions of minecraft.
+recipes and other parameters of blocks and items.  In many
+ways this makes JSON Recipe Editor a mod related to
+minetweaker / crafttweaker, however with a different
+runtime, and no way to reload once the world is loaded, this 
+means some things possible in this mod that can't be done in
+minetweaker, and some things in minetweaker can't be done in
+this mod.
 
 ## Json Script ##
 
@@ -47,18 +43,10 @@ validate their JSON Scripts prior to loading the pack.
 
 ## Commands ##
 
-Here is a quick list of the commands supported in the 
-mod (for more details a link and examples will be
-provided)
+Commands and Documentation of the jsonScript commands and
+their structure is avalible on the wiki at
 
-1. ``delete recipe``: find and remove a crafting recipe
-1. ``shaped recipe``: create a new shaped crafting recipe
-1. ``shapeless recipe``: create a new shapeless crafting
-recipe
-1. ``register ore``: register (add) item(s) to a OreDictionary entry
-1. ``delete furnace``: delete a furnace smelting recipe
-1. ``add furnace``: add a furnace smelting recipe
-1. ``hide in jei``: hide an item form the JEI ingredient listing
+https://github.com/ezterry/JsonRecipeEdit/wiki
 
 ## Mod Packs / Reuse Policy ##
 
@@ -118,8 +106,3 @@ Then in your mods ``init()``, call the constructor if
  Note" the schema object provided with this mod will not
  support third part mods out of box, althogh alternatives
  may be made for popular mods.
- 
- ## Wiki ##
- 
- Additional documentation is available on the wiki:
- https://github.com/ezterry/JsonRecipeEdit/wiki
