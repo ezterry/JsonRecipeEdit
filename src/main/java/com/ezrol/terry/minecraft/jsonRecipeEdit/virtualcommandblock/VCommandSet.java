@@ -133,6 +133,18 @@ public class VCommandSet {
                 return;//error
             }
         }
+        //run at random (1 in n chance per tick)
+        if(filter.startsWith("?")){
+            try {
+                if (0 != w.rand.nextInt((int)Long.parseLong(filter.substring(1)))) {
+                    return; //pass
+                }
+            }
+            catch(Exception e){
+                JSONRecipeEdit.log(Level.ERROR,String.format("Unable to parse filter: %s",filter));
+                return;//error
+            }
+        }
         //run if tag is cleared
         if(filter.startsWith("!")){
             //when tag is cleared
