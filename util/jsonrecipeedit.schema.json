@@ -401,9 +401,43 @@
           },
           "description": "list of possible drops and odds"
         },
+        "silktouch":{
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "count":{
+                    "type": "integer",
+                    "description": "size of the item stack default=1"
+                  },
+                  "item":{
+                    "description": "Item entry",
+                    "$ref": "#/definitions/item array"
+                  },
+                  "weight":{
+                    "type":"number",
+                    "description":"Weight of the item, if dropone=false: 1.0 = 100% drop, else is used as a weight with all other entries"
+                  }
+                },
+                "required": [
+                  "item",
+                  "weight"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "description": "list of drops when using silk touch (same as drops if omitted entirely)"
+        },
         "block":{
           "type": "string",
           "description": "block that was broken <modid>:<blockname>"
+        },
+        "exp":{
+          "type": "integer",
+          "description": "amount of exp to drop when not silk touched (default -1, the original amount)"
         },
         "meta":{
           "type": "string",

@@ -33,6 +33,8 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.command.InvalidBlockStateException;
 import net.minecraft.command.NumberInvalidException;
 import net.minecraft.command.server.CommandSetBlock;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
@@ -59,13 +61,31 @@ public class BlockDrops extends GenericCommand{
         boolean dropOne;
         float fortuneMultiplier;
         float dropChance;
-        Map<ItemStack,Float> items;
-        float totalWeight;
+        Map<ItemStack,Float> stdItems;
+        Map<ItemStack,Float> silktouchItems;
+        float stdWeight;
+        float silktouchWeight;
+        int exp;
     }
 
     public BlockDrops(){
         registered=false;
         substitutions=new HashMap<>();
+    }
+
+    @SuppressWarnings("unused")
+    @SubscribeEvent
+    public void playerBreaksBlock(BlockEvent.BreakEvent event){
+        IBlockState block = event.getState();
+        if(substitutions.containsKey(block)){
+            boolean isSilkTouch = EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH,
+                    event.getPlayer().getHeldItemMainhand()) > 0;
+            newDrops drop = substitutions.get(block);
+
+            if(drop.exp >= 0 && !isSilkTouch){
+                event.setExpToDrop(drop.exp);
+            }
+        }
     }
 
     @SuppressWarnings("unused")
@@ -86,14 +106,23 @@ public class BlockDrops extends GenericCommand{
             }
             if(operation.dropOne){
                 //we just push one of the provided stacks
-                itm=selectOne(operation,event.getWorld().rand);
+                itm=selectOne(operation,event.getWorld().rand, event.isSilkTouching());
                 if(itm != null){
                     drops.add(itm.copy());
                 }
             }
             else{
                 //based on the odds add the provided stacks
-                for(Map.Entry<ItemStack,Float> e : operation.items.entrySet()) {
+                Map<ItemStack,Float> itms;
+
+                if(event.isSilkTouching() && operation.silktouchItems != null){
+                    itms = operation.silktouchItems;
+                }
+                else{
+                    itms = operation.stdItems;
+                }
+
+                for(Map.Entry<ItemStack,Float> e : itms.entrySet()) {
                     float weight = e.getValue();
                     int i;
 
@@ -117,11 +146,22 @@ public class BlockDrops extends GenericCommand{
         }
     }
 
-    private ItemStack selectOne(newDrops d,Random r){
-        float v = r.nextFloat() * d.totalWeight;
+    private ItemStack selectOne(newDrops d,Random r,boolean isSilkTouch){
+        float v;
+        Map<ItemStack,Float> itms;
+
+        if(isSilkTouch && d.silktouchItems != null){
+            v = r.nextFloat() * d.silktouchWeight;
+            itms = d.silktouchItems;
+        }
+        else{
+            v = r.nextFloat() * d.stdWeight;
+            itms = d.stdItems;
+        }
+
         ItemStack stack =null;
 
-        for(Map.Entry<ItemStack,Float> e : d.items.entrySet()){
+        for(Map.Entry<ItemStack,Float> e : itms.entrySet()){
             v-=e.getValue();
             stack = e.getKey();
             if(v<=0f){
@@ -140,7 +180,7 @@ public class BlockDrops extends GenericCommand{
     @Override
     public void runCommand(JsonObject command) {
         newDrops data = new newDrops();
-        data.items=new HashMap<>();
+        data.stdItems =new HashMap<>();
 
         IBlockState block;
 
@@ -165,7 +205,14 @@ public class BlockDrops extends GenericCommand{
             data.dropChance = -1.0f;
         }
 
-        data.totalWeight=0;
+        //drop exp default -1 (don't change XP drop)
+        if(command.has("exp")){
+            data.exp = command.get("exp").getAsInt();
+        } else {
+            data.exp = -1;
+        }
+
+        data.stdWeight = 0;
         if(!command.has("drops") || !command.get("drops").isJsonArray()){
             error(String.format("command must contain a 'drops' array: %s",command.toString()));
             return;
@@ -186,7 +233,7 @@ public class BlockDrops extends GenericCommand{
                 itm=getItemFromArray(((JsonObject)e).get("item").getAsJsonArray(),count);
             }
             else {
-                error(String.format("missing items array: %s",e.toString()));
+                error(String.format("missing stdItems array: %s",e.toString()));
                 return;
             }
             if(((JsonObject)e).has("weight")){
@@ -196,8 +243,45 @@ public class BlockDrops extends GenericCommand{
                 error(String.format("missing weight: %s",e.toString()));
                 return;
             }
-            data.items.put(itm,weight);
-            data.totalWeight += weight;
+            data.stdItems.put(itm,weight);
+            data.stdWeight += weight;
+        }
+
+        data.silktouchWeight = 0;
+        if(command.has("silktouch")){
+            data.silktouchItems = new HashMap<>();
+            for(JsonElement e : command.get("silktouch").getAsJsonArray()){
+                if(!e.isJsonObject()){
+                    error(String.format("expected json object at: %s",e.toString()));
+                    return;
+                }
+                ItemStack itm;
+                int count=1;
+                Float weight;
+
+                if(((JsonObject)e).has("count")){
+                    count = ((JsonObject)e).get("count").getAsInt();
+                }
+                if(((JsonObject)e).get("item").isJsonArray()){
+                    itm=getItemFromArray(((JsonObject)e).get("item").getAsJsonArray(),count);
+                }
+                else {
+                    error(String.format("missing stdItems array: %s",e.toString()));
+                    return;
+                }
+                if(((JsonObject)e).has("weight")){
+                    weight = ((JsonObject)e).get("weight").getAsFloat();
+                }
+                else{
+                    error(String.format("missing weight: %s",e.toString()));
+                    return;
+                }
+                data.silktouchItems.put(itm,weight);
+                data.silktouchWeight += weight;
+            }
+        }
+        else{
+            data.silktouchItems = null;
         }
 
         String blockName = command.get("block").getAsString();
