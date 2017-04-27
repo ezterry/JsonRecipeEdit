@@ -29,6 +29,7 @@ package com.ezrol.terry.minecraft.jsonRecipeEdit.virtualcommandblock;
 
 import com.ezrol.terry.minecraft.jsonRecipeEdit.JSONRecipeEdit;
 import net.minecraft.command.ICommandManager;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
 
@@ -101,7 +102,7 @@ public class VCommandSet {
     }
 
     @SuppressWarnings({"WeakerAccess"})
-    public void evaluate(ICommandManager manager, World w, int d){
+    public void evaluate(ICommandManager manager, World w, int d,BlockPos p){
         //check dimension
         if((!dim.equals("*")) && (dimnum != d)){
             return;
@@ -162,7 +163,13 @@ public class VCommandSet {
 
         //JSONRecipeEdit.log(Level.INFO,String.format("running on dim %d",d));
         //run commands
-        VCommandSender sender = new VCommandSender(w);
+        VCommandSender sender;
+        if(p == null) {
+            sender = new VCommandSender(w);
+        }
+        else{
+            sender = new VCommandSender(w,p);
+        }
         sender.setLog(log);
         sender.setName(name);
 

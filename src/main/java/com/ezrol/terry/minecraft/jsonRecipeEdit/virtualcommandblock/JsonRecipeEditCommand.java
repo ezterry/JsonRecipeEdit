@@ -33,6 +33,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.Level;
 
@@ -61,24 +62,27 @@ public class JsonRecipeEditCommand extends CommandBase {
     @SuppressWarnings("NullableProblems")
     @Override
     public String getUsage(ICommandSender sender) {
-        return "jsonRecipeEdit <set|clear|test|run|list|runone> <name of tag/run>";
+        return "jsonRecipeEdit <set|clear|test|run|list|runone|runin> <name of tag/run>";
     }
 
     @SuppressWarnings("NullableProblems")
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (args.length != 2 && (args.length != 1 || !args[0].equals("list")) && !args[0].equals("runone")) {
-            throw new WrongUsageException("commands.jsonrecipeedit.badformat", getUsage(sender));
-        }
         World w = sender.getEntityWorld();
         switch (args[0]) {
             case "run":
+                if(args.length != 2){
+                    throw new WrongUsageException("commands.jsonrecipeedit.badformat", getUsage(sender));
+                }
                 if (sender.sendCommandFeedback()) {
                     JSONRecipeEdit.log(Level.INFO, String.format("attempting to run \"%s\" command chains by %s", args[1], sender.getName()));
                 }
                 JSONRecipeEdit.commandChains.runTrigger(String.format("Run: %s", args[1]), w);
                 break;
             case "set":
+                if(args.length != 2){
+                    throw new WrongUsageException("commands.jsonrecipeedit.badformat", getUsage(sender));
+                }
                 if (JSONRecipeEdit.commandChains.getTags().setTag(args[1], w)) {
                     notifyCommandListener(sender, this, "commands.jsonrecipeedit.onsetsuccess", args[1]);
                 } else {
@@ -86,6 +90,9 @@ public class JsonRecipeEditCommand extends CommandBase {
                 }
                 break;
             case "clear":
+                if(args.length != 2){
+                    throw new WrongUsageException("commands.jsonrecipeedit.badformat", getUsage(sender));
+                }
                 if (JSONRecipeEdit.commandChains.getTags().clearTag(args[1], w)) {
                     notifyCommandListener(sender, this, "commands.jsonrecipeedit.onclearsuccess", args[1]);
                 } else {
@@ -93,6 +100,9 @@ public class JsonRecipeEditCommand extends CommandBase {
                 }
                 break;
             case "test":
+                if(args.length != 2){
+                    throw new WrongUsageException("commands.jsonrecipeedit.badformat", getUsage(sender));
+                }
                 if (JSONRecipeEdit.commandChains.getTags().checkTag(args[1])) {
                     notifyCommandListener(sender, this, "commands.jsonrecipeedit.testtagset");
                 } else {
@@ -116,6 +126,26 @@ public class JsonRecipeEditCommand extends CommandBase {
                 else{
                     throw new CommandException("commands.jsonrecipeedit.nocommandprovided");
                 }
+                break;
+            case "runin":
+                if(args.length != 3){
+                    throw new WrongUsageException("commands.jsonrecipeedit.badformat2", getUsage(sender));
+                }
+                //run the command (with)in n blocks of the current position
+                int range = parseInt(args[1]);
+                BlockPos p = sender.getPosition();
+                if(range > 0) {
+                    p=p.add(
+                            server.getEntityWorld().rand.nextInt(range * 2) - range,
+                            server.getEntityWorld().rand.nextInt(range * 2) - range,
+                            server.getEntityWorld().rand.nextInt(range * 2) - range
+                    );
+                }
+                if (sender.sendCommandFeedback()) {
+                    JSONRecipeEdit.log(Level.INFO, String.format("attempting to run \"%s\" command chains by %s", args[1], sender.getName()));
+                    JSONRecipeEdit.log(Level.INFO, String.format("(chain being run at cords: %d,%d,%d)",p.getX(),p.getY(),p.getZ()));
+                }
+                JSONRecipeEdit.commandChains.runTrigger(String.format("Run: %s", args[2]), w, p);
                 break;
             default:
                 throw new WrongUsageException("commands.jsonrecipeedit.badformat", getUsage(sender));

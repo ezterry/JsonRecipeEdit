@@ -30,6 +30,7 @@ package com.ezrol.terry.minecraft.jsonRecipeEdit.virtualcommandblock;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.JSONRecipeEdit;
 import net.minecraft.command.ICommandManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -81,7 +82,11 @@ public class VCommandLogic {
     }
 
 
-    public void runTrigger(String t,World w){
+    public void runTrigger(String t,World w) {
+        runTrigger(t,w,null);
+    }
+
+    public void runTrigger(String t, World w, BlockPos p){
         if(cmdManager == null){
             //noinspection ConstantConditions
             cmdManager = w.getMinecraftServer().getCommandManager();
@@ -89,7 +94,7 @@ public class VCommandLogic {
         if(worldLoaded && commandTable.containsKey(t)) {
             int d = w.provider.getDimension();
             for (VCommandSet s : commandTable.get(t)) {
-                s.evaluate(cmdManager,w,d);
+                s.evaluate(cmdManager,w,d,p);
             }
         }
     }

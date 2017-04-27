@@ -5,5 +5,6 @@ commands.jsonrecipeedit.onclearfail=Tag was already cleared
 commands.jsonrecipeedit.testtagset=Tag is set
 commands.jsonrecipeedit.testtagclear=Tag is cleared
 commands.jsonrecipeedit.taglist=The current active tags: %s
-commands.jsonrecipeedit.badformat=Expected 2 arguments: \n%s
+commands.jsonrecipeedit.badformat=Expected 2 arguments: %s
+commands.jsonrecipeedit.badformat2=Expected 3 arguments: %s
 commands.jsonrecipeedit.nocommandprovided=Expected one or more chains to run

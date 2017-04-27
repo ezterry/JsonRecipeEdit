@@ -53,12 +53,19 @@ public class VCommandSender implements ICommandSender {
     private boolean logOn;
     private World world;
     private boolean lastSuccess;
+    private BlockPos location;
 
     VCommandSender(World w){
         name = "VCommandChain";
         logOn = false;
         world = w;
         lastSuccess = false;
+        location = null;
+    }
+
+    VCommandSender(World w,BlockPos location){
+        this(w);
+        this.location = location;
     }
 
     @Override
@@ -102,7 +109,12 @@ public class VCommandSender implements ICommandSender {
     @Override
     @SuppressWarnings("NullableProblems")
     public BlockPos getPosition() {
-        return world.getSpawnPoint();
+        if(location == null) {
+            return world.getSpawnPoint();
+        }
+        else{
+            return this.location;
+        }
     }
 
     @Override
