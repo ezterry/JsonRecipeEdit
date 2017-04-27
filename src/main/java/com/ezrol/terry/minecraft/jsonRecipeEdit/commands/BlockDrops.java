@@ -59,6 +59,7 @@ public class BlockDrops extends GenericCommand{
     class newDrops{
         boolean dropOriginal;
         boolean dropOne;
+        boolean silktouchDropOne;
         float fortuneMultiplier;
         float dropChance;
         Map<ItemStack,Float> stdItems;
@@ -104,7 +105,7 @@ public class BlockDrops extends GenericCommand{
             if(operation.dropChance>0){
                 event.setDropChance(operation.dropChance);
             }
-            if(operation.dropOne){
+            if(event.isSilkTouching() ? operation.silktouchDropOne : operation.dropOne){
                 //we just push one of the provided stacks
                 itm=selectOne(operation,event.getWorld().rand, event.isSilkTouching());
                 if(itm != null){
@@ -190,6 +191,9 @@ public class BlockDrops extends GenericCommand{
 
         //dropOne default=false
         data.dropOne = command.has("dropone") && command.get("dropone").getAsBoolean();
+        data.silktouchDropOne = command.has("silkdropone") ?
+                command.get("dropone").getAsBoolean() :
+                data.dropOne;
 
         //fortune multipier default=1.10
         if (command.has("fortunemultiplier")) {
@@ -279,6 +283,7 @@ public class BlockDrops extends GenericCommand{
                 data.silktouchItems.put(itm,weight);
                 data.silktouchWeight += weight;
             }
+
         }
         else{
             data.silktouchItems = null;

@@ -361,7 +361,11 @@
         },
         "dropone": {
           "type": "boolean",
-          "description": "Drop one item from the weighted list, (otherwise odds of each item are seperate) default=false"
+          "description": "Drop one item from the weighted list, (otherwise odds of each item are separate) default=false"
+        },
+        "silkdropone": {
+          "type": "boolean",
+          "description": "Drop one item from the weighted list when silk touching, (otherwise odds of each item are separate) default=<value of dropone>"
         },
         "fortunemultiplier": {
           "type": "number",
