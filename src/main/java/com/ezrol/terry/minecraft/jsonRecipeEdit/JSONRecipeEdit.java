@@ -29,6 +29,7 @@ package com.ezrol.terry.minecraft.jsonRecipeEdit;
 
 import com.ezrol.terry.minecraft.jsonRecipeEdit.api.CommandRegistry;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.commands.*;
+import com.ezrol.terry.minecraft.jsonRecipeEdit.integration.GenericIntegratedMod;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.proxy.commonproxy;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.virtualcommandblock.JsonRecipeEditCommand;
 import com.ezrol.terry.minecraft.jsonRecipeEdit.virtualcommandblock.VCommandLogic;
@@ -58,7 +59,7 @@ import static net.minecraftforge.oredict.RecipeSorter.Category.SHAPELESS;
         modid = JSONRecipeEdit.MODID,
         version = JSONRecipeEdit.VERSION,
         acceptedMinecraftVersions = "[1.11.2,1.11.9]",
-        dependencies = "before:jei;required-after:forge@[13.20.0.2228,)"
+        dependencies = "before:jei@[4.3.3.270,);required-after:forge@[13.20.0.2282,)"
 )
 public class JSONRecipeEdit {
     public static final String MODID = "jsonrecipeedit";
@@ -156,6 +157,8 @@ public class JSONRecipeEdit {
 
         cr.register(new HideInJEI());
 
+        GenericIntegratedMod.initAll(event);
+
         //init virtual command chains
         commandChains = new VCommandLogic();
     }
@@ -194,6 +197,8 @@ public class JSONRecipeEdit {
                     SHAPELESS, "after:minecraft:shapeless");
             RecipeSorter.sortCraftManager();
         }
+
+        GenericIntegratedMod.postJsonAll(event);
     }
 
     /**

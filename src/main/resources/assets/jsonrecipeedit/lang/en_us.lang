@@ -8,3 +8,5 @@ commands.jsonrecipeedit.taglist=The current active tags: %s
 commands.jsonrecipeedit.badformat=Expected 2 arguments: %s
 commands.jsonrecipeedit.badformat2=Expected 3 arguments: %s
 commands.jsonrecipeedit.nocommandprovided=Expected one or more chains to run
+commands.jsonrecipeedit.dumpsuccess=Dump csv file has been successfully generated
+commands.jsonrecipeedit.dumpfail=unable to run the specified csv dump, please ensure the name is valid

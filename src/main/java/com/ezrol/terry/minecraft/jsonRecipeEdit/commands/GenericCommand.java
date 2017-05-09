@@ -35,6 +35,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.oredict.OreDictionary;
 import org.apache.logging.log4j.Level;
@@ -109,6 +111,37 @@ public abstract class GenericCommand implements IRECommand{
         }
         catch(Exception e){
             error(String.format("Unable to read in item from json: %s",e.toString()));
+            return null;
+        }
+    }
+
+    /**
+     * Get a fluid stack from a Json array of length 2
+     * [fluid,quantity]
+     * Such as ["water",1000] for 1 bucket of water
+     *
+     * If no amount is provided 1000mb is assumed
+     *
+     * @param input the json array to create a FluidStack from
+     */
+    @Nullable
+    protected FluidStack getFluidFromArray(JsonArray input){
+        if(input.size() == 0){
+            error("null array expecting [<fluid>] or [<fluid>,<amount>]");
+            return(null);
+        }
+        try{
+            String name = input.get(0).getAsString();
+            int quant = 1000;
+
+            if(input.size() > 1){
+                quant = input.get(1).getAsInt();
+            }
+
+            return(FluidRegistry.getFluidStack(name,quant));
+        }
+        catch(Exception e){
+            error(String.format("Unable to read in fluid from json: %s",e.toString()));
             return null;
         }
     }

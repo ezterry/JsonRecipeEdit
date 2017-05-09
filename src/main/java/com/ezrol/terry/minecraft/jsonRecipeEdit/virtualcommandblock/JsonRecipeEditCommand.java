@@ -28,6 +28,7 @@
 package com.ezrol.terry.minecraft.jsonRecipeEdit.virtualcommandblock;
 
 import com.ezrol.terry.minecraft.jsonRecipeEdit.JSONRecipeEdit;
+import com.ezrol.terry.minecraft.jsonRecipeEdit.tools.DataDumps;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -62,13 +63,17 @@ public class JsonRecipeEditCommand extends CommandBase {
     @SuppressWarnings("NullableProblems")
     @Override
     public String getUsage(ICommandSender sender) {
-        return "jsonRecipeEdit <set|clear|test|run|list|runone|runin> <name of tag/run>";
+        return "jsonRecipeEdit <set|clear|test|run|list|runone|runin|datadump> <parameters>";
     }
 
     @SuppressWarnings("NullableProblems")
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         World w = sender.getEntityWorld();
+
+        if(args.length < 1){
+            throw new WrongUsageException("commands.jsonrecipeedit.badformat", getUsage(sender));
+        }
         switch (args[0]) {
             case "run":
                 if(args.length != 2){
@@ -146,6 +151,17 @@ public class JsonRecipeEditCommand extends CommandBase {
                     JSONRecipeEdit.log(Level.INFO, String.format("(chain being run at cords: %d,%d,%d)",p.getX(),p.getY(),p.getZ()));
                 }
                 JSONRecipeEdit.commandChains.runTrigger(String.format("Run: %s", args[2]), w, p);
+                break;
+            case "datadump":
+                if(args.length != 2){
+                    throw new WrongUsageException("commands.jsonrecipeedit.badformat", getUsage(sender));
+                }
+                if(DataDumps.runDataDump(args[1])){
+                    notifyCommandListener(sender, this, "commands.jsonrecipeedit.dumpsuccess");
+                }
+                else{
+                    throw new CommandException("commands.jsonrecipeedit.dumpfail");
+                }
                 break;
             default:
                 throw new WrongUsageException("commands.jsonrecipeedit.badformat", getUsage(sender));
