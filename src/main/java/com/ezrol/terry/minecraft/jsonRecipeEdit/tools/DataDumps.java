@@ -32,6 +32,7 @@ import com.ezrol.terry.minecraft.jsonRecipeEdit.integration.GenericIntegratedMod
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -191,21 +192,22 @@ public class DataDumps {
 
             for(Map.Entry<ResourceLocation,Item> e : sortedEntries(ForgeRegistries.ITEMS.getEntries())){
                 Item i = e.getValue();
+                ItemStack defInstance = new ItemStack(i);
                 StringBuilder harvestLevel= new StringBuilder();
-                for(String tool : i.getToolClasses(i.getDefaultInstance())){
+                for(String tool : i.getToolClasses(defInstance)){
                     harvestLevel.append("<")
                             .append(tool)
                             .append(":")
-                            .append(i.getHarvestLevel(i.getDefaultInstance(), tool, null, null))
+                            .append(i.getHarvestLevel(defInstance, tool, null, null))
                             .append(">");
                 }
                 output.write(generateCSVLine(e.getKey().toString(),
                         Item.getIdFromItem(i),
                         harvestLevel.toString(),
                         i.getUnlocalizedName(),
-                        i.getMaxDamage(i.getDefaultInstance()),
+                        i.getMaxDamage(defInstance),
                         i.isRepairable(),
-                        i.getItemStackLimit(i.getDefaultInstance())));
+                        i.getItemStackLimit(defInstance)));
             }
             output.flush();
             output.close();
