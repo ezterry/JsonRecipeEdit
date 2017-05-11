@@ -76,6 +76,46 @@
           {
             "title": "Tool Crafting",
             "$ref": "#/definitions/toolCraftingRecipe"
+          },
+          {
+            "title": "TConstruct Remove Drying",
+            "$ref": "#/definitions/ticRemoveDrying"
+          },
+          {
+            "title": "TConstruct Add Drying",
+            "$ref": "#/definitions/ticAddDrying"
+          },
+          {
+            "title": "TConstruct Remove Melting",
+            "$ref": "#/definitions/ticRemoveMelting"
+          },
+          {
+            "title": "TConstruct Add Melting",
+            "$ref": "#/definitions/ticAddMelting"
+          },
+          {
+            "title": "TConstruct Remove Table Casting",
+            "$ref": "#/definitions/ticRemoveTableCasting"
+          },
+          {
+            "title": "TConstruct Add Table Casting",
+            "$ref": "#/definitions/ticAddTableCasting"
+          },
+          {
+            "title": "TConstruct Remove Basin Casting",
+            "$ref": "#/definitions/ticRemoveBasinCasting"
+          },
+          {
+            "title": "TConstruct Add Basin Casting",
+            "$ref": "#/definitions/ticAddBasinCasting"
+          },
+          {
+            "title": "TConstruct Remove Alloy",
+            "$ref": "#/definitions/ticRemoveAlloy"
+          },
+          {
+            "title": "TConstruct Add Alloy",
+            "$ref": "#/definitions/ticAddAlloy"
           }
         ]
       }
@@ -694,6 +734,311 @@
       ],
       "additionalProperties": false
     },
+    "ticRemoveDrying": {
+      "properties": {
+        "command": {
+          "enum": [
+            "tic remove drying"
+          ]
+        },
+        "item":{
+          "description": "Result Item entry to remove",
+          "$ref": "#/definitions/item array"
+        }
+      },
+      "required": [
+        "command",
+        "item"
+      ],
+      "additionalProperties": false
+    },
+    "ticAddDrying": {
+      "properties": {
+        "command": {
+          "enum": [
+            "tic add drying"
+          ]
+        },
+        "input":{
+          "oneOf": [
+            {
+              "description": "Ore dictionary entry for source item",
+              "type": "string"
+            },
+            {
+              "description": "Item entry for source item",
+              "$ref": "#/definitions/item array"
+            }
+          ]
+        },
+        "output":{
+          "description": "Result Item entry to remove",
+          "$ref": "#/definitions/item array"
+        },
+        "time":{
+          "description": "dry time in ticks (default = 20 * 60 * 5)",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "command",
+        "input",
+        "output"
+      ],
+      "additionalProperties": false
+    },
+    "ticRemoveMelting": {
+      "properties": {
+        "command": {
+          "enum": [
+            "tic remove melting"
+          ]
+        },
+        "fluid":{
+          "description": "The result fluid of melting recipes to remove (matches both metal and amount)",
+          "$ref": "#/definitions/fluid array"
+        }
+      },
+      "required": [
+        "command",
+        "fluid"
+      ],
+      "additionalProperties": false
+    },
+    "ticAddMelting": {
+      "properties": {
+        "command": {
+          "enum": [
+            "tic add melting"
+          ]
+        },
+        "input":{
+          "oneOf": [
+            {
+              "description": "Ore dictionary entry of item to melt",
+              "type": "string"
+            },
+            {
+              "description": "Item stack entry for source of item to melt",
+              "$ref": "#/definitions/item array"
+            }
+          ]
+        },
+        "output":{
+          "description": "The resulting fluid stack including amount",
+          "$ref": "#/definitions/fluid array"
+        }
+      },
+      "required": [
+        "command",
+        "input",
+        "output"
+      ],
+      "additionalProperties": false
+    },
+    "ticRemoveTableCasting": {
+      "properties": {
+        "command": {
+          "enum": [
+            "tic remove table casting"
+          ]
+        },
+        "fluid":{
+          "description": "The fluid input of the recipe to be removed (amount ignored)",
+          "$ref": "#/definitions/fluid array"
+        },
+        "cast":{
+          "oneOf": [
+            {
+              "description": "Remove the recipe without a cast item",
+              "type": "null"
+            },
+            {
+              "description": "Item used as the cast for the recipe to be removed.",
+              "$ref": "#/definitions/item array"
+            }
+          ]
+        }
+      },
+      "required": [
+        "command",
+        "fluid",
+        "cast"
+      ],
+      "additionalProperties": false
+    },
+    "ticAddTableCasting": {
+      "properties": {
+        "command": {
+          "enum": [
+            "tic add table casting"
+          ]
+        },
+        "fluid":{
+          "description": "The fluid (and amount) to pour onto the cast",
+          "$ref": "#/definitions/fluid array"
+        },
+        "cast":{
+          "oneOf": [
+            {
+              "description": "Pour directly into the table (no cast/item)",
+              "type": "null"
+            },
+            {
+              "description": "Ore dictionary of the items to use as the cast",
+              "type": "string"
+            },
+            {
+              "description": "Item to pour onto/into as a cast",
+              "$ref": "#/definitions/item array"
+            }
+          ]
+        },
+        "output":{
+          "description": "Result Item",
+          "$ref": "#/definitions/item array"
+        },
+        "consumecast":{
+          "description": "If the cast item is delete at the end of the craft (default true, ignored if cast is null)",
+          "type": "boolean"
+        },
+        "switchoutput":{
+          "description": "If item becomes a cast (default false, ignored if cast is null)",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "command",
+        "fluid",
+        "cast",
+        "output"
+      ],
+      "additionalProperties": false
+    },
+    "ticRemoveBasinCasting": {
+      "properties": {
+        "command": {
+          "enum": [
+            "tic remove basin casting"
+          ]
+        },
+        "fluid":{
+          "description": "The fluid input of the recipe to be removed (amount ignored)",
+          "$ref": "#/definitions/fluid array"
+        },
+        "cast":{
+          "oneOf": [
+            {
+              "description": "Remove the recipe without a cast item",
+              "type": "null"
+            },
+            {
+              "description": "Item used as the cast for the recipe to be removed.",
+              "$ref": "#/definitions/item array"
+            }
+          ]
+        }
+      },
+      "required": [
+        "command",
+        "fluid",
+        "cast"
+      ],
+      "additionalProperties": false
+    },
+    "ticAddBasinCasting": {
+      "properties": {
+        "command": {
+          "enum": [
+            "tic add basin casting"
+          ]
+        },
+        "fluid":{
+          "description": "The fluid (and amount) to pour onto the cast",
+          "$ref": "#/definitions/fluid array"
+        },
+        "cast":{
+          "oneOf": [
+            {
+              "description": "Pour directly into the table (no cast/item)",
+              "type": "null"
+            },
+            {
+              "description": "Ore dictionary of the items to use as the cast",
+              "type": "string"
+            },
+            {
+              "description": "Item to pour onto/into as a cast",
+              "$ref": "#/definitions/item array"
+            }
+          ]
+        },
+        "output":{
+          "description": "Result Item",
+          "$ref": "#/definitions/item array"
+        },
+        "consumecast":{
+          "description": "If the cast item is delete at the end of the craft (default true, ignored if cast is null)",
+          "type": "boolean"
+        },
+        "switchoutput":{
+          "description": "If item becomes a cast (default false, ignored if cast is null)",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "command",
+        "fluid",
+        "cast",
+        "output"
+      ],
+      "additionalProperties": false
+    },
+    "ticRemoveAlloy": {
+      "properties": {
+        "command": {
+          "enum": [
+            "tic remove alloy"
+          ]
+        },
+        "fluid":{
+          "description": "The fluid of the alloy to remove",
+          "$ref": "#/definitions/fluid array"
+        }
+      },
+      "required": [
+        "command",
+        "fluid"
+      ],
+      "additionalProperties": false
+    },
+    "ticAddAlloy": {
+      "properties": {
+        "command": {
+          "enum": [
+            "tic add alloy"
+          ]
+        },
+        "output":{
+          "description": "The alloy to form",
+          "$ref": "#/definitions/fluid array"
+        },
+        "components":{
+          "type": "array",
+          "items": {
+            "description": "A component ration and the amount per combining unit",
+            "$ref": "#/definitions/fluid array"
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "command",
+        "output",
+        "components"
+      ],
+      "additionalProperties": false
+    },
     "recipe ingredients": {
       "patternProperties": {
         "^[a-z]$": {
@@ -738,6 +1083,21 @@
       ],
       "minItems": 1,
       "maxItems": 3
+    },
+    "fluid array": {
+      "type": "array",
+      "items":[
+        {
+          "type": "string",
+          "description": "fluid name (example: iron)"
+        },
+        {
+          "type": "integer",
+          "description": "ammount in mb of the item stack, default 1000"
+        }
+      ],
+      "minItems": 1,
+      "maxItems": 2
     }
   }
 }
