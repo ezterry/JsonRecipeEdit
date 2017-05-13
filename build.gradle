@@ -15,24 +15,28 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'maven'
 
 repositories {
-    maven { // JEI
-        url "http://dvs1.progwml6.com/files/maven"
+    maven {
+        name "ModMaven"
+        url "https://modmaven.k-4u.nl"
     }
 }
 
 /* Build Version */
-
 def mod_vers_part = "0.8"
 def mc_vers_part = "1.11.2"
 
 /* JEI version to use */
 def jei_version = "4.3.3.270"
 /* TiC version to use */
-def tic_verions = "2.7.0.6"
+def tic_verions = "2.7.0.12"
 def mantle_version = "1.2.0.26"
+/* Actually Additions Version */
+def actuallyadditions_version = "r107"
 
 version = "${mc_vers_part}-${mod_vers_part}"
+//noinspection GroovyUnusedAssignment
 group= "com.ezrol.terry.minecraft.JsonRecipeEdit"
+//noinspection GroovyUnusedAssignment
 archivesBaseName = "jsonRecipeEdit"
 
 sourceCompatibility = targetCompatibility = "1.7" // Need this here so eclipse task generates correctly.
@@ -77,10 +81,11 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    // compile against the JEI API
+    // Remove repositories to include
     deobfCompile "mezz.jei:jei_${mc_vers_part}:${jei_version}"
     deobfCompile "slimeknights.mantle:Mantle:${mc_vers_part}-${mantle_version}"
     deobfCompile "slimeknights:TConstruct:${mc_vers_part}-${tic_verions}"
+    deobfCompile "de.ellpeck.actuallyadditions:ActuallyAdditions:${mc_vers_part}-${actuallyadditions_version}"
 }
 
 processResources

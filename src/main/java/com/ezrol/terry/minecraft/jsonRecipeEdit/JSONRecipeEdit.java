@@ -98,7 +98,7 @@ public class JSONRecipeEdit {
     }
 
     /**
-     * Early Forge initialization event, here we can check the existance of the primary Json Script
+     * Early Forge initialization event, here we can check the existence of the primary Json Script
      *
      * @param event Forge event data
      */
