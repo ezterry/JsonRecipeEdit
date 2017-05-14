@@ -116,6 +116,46 @@
           {
             "title": "TConstruct Add Alloy",
             "$ref": "#/definitions/ticAddAlloy"
+          },
+          {
+            "title": "Actually Additions Remove Crusher Recipe",
+            "$ref": "#/definitions/aaRemoveCrusher"
+          },
+          {
+            "title": "Actually Additions Add Crusher Recipe",
+            "$ref": "#/definitions/aaAddCrusher"
+          },
+          {
+            "title": "Actually Additions Remove Ball of Fur item",
+            "$ref": "#/definitions/aaRemoveBallOfFur"
+          },
+          {
+            "title": "Actually Additions Add Ball of Fur item",
+            "$ref": "#/definitions/aaAddBallOfFur"
+          },
+          {
+            "title": "Actually Additions Remove Treasure Chest item",
+            "$ref": "#/definitions/aaRemoveTreasureChest"
+          },
+          {
+            "title": "Actually Additions Add Treasure Chest item",
+            "$ref": "#/definitions/aaAddTreasureChest"
+          },
+          {
+            "title": "Actually Additions Remove Atomic Reconstructor recipe",
+            "$ref": "#/definitions/aaRemoveAtomicReconstructor"
+          },
+          {
+            "title": "Actually Additions Add Atomic Reconstructor recipe",
+            "$ref": "#/definitions/aaAddAtomicReconstructor"
+          },
+          {
+            "title": "Actually Additions Remove Empowerer recipe",
+            "$ref": "#/definitions/aaRemoveEmpowerer"
+          },
+          {
+            "title": "Actually Additions Add Empowerer recipe",
+            "$ref": "#/definitions/aaAddEmpowerer"
           }
         ]
       }
@@ -1036,6 +1076,281 @@
         "command",
         "output",
         "components"
+      ],
+      "additionalProperties": false
+    },
+    "aaRemoveCrusher": {
+      "properties": {
+        "command": {
+          "enum": [
+            "aa remove crusher"
+          ]
+        },
+        "input":{
+          "description": "The input item of the recipe aa crusher recipe to remove",
+          "$ref": "#/definitions/item array"
+        }
+      },
+      "required": [
+        "command",
+        "input"
+      ],
+      "additionalProperties": false
+    },
+    "aaAddCrusher": {
+      "properties": {
+        "command": {
+          "enum": [
+            "aa add crusher"
+          ]
+        },
+        "input":{
+          "description": "The input item of the recipe aa crusher recipe to remove",
+          "$ref": "#/definitions/item array"
+        },
+        "outputone":{
+          "description": "The input item of the recipe aa crusher recipe to remove",
+          "$ref": "#/definitions/item array"
+        },
+        "outputonecount":{
+          "description": "The stack size of the input count (default 1)",
+          "type": "integer"
+        },
+        "outputtwo":{
+          "description": "The input item of the recipe aa crusher recipe to remove (default empty stack)",
+          "$ref": "#/definitions/item array"
+        },
+        "outputtwocount":{
+          "description": "The stack size of the input count (default 1)",
+          "type": "integer"
+        },
+        "chance":{
+          "description": "The chance (0-never to 100-always) to return the secondary output (default=5)",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        }
+      },
+      "required": [
+        "command",
+        "input",
+        "outputone"
+      ],
+      "additionalProperties": false
+    },
+    "aaRemoveBallOfFur": {
+      "properties": {
+        "command": {
+          "enum": [
+            "aa remove ball of fur"
+          ]
+        },
+        "item":{
+          "description": "The item to remove from the ball of fur return list",
+          "$ref": "#/definitions/item array"
+        }
+      },
+      "required": [
+        "command",
+        "item"
+      ],
+      "additionalProperties": false
+    },
+    "aaAddBallOfFur": {
+      "properties": {
+        "command": {
+          "enum": [
+            "aa add ball of fur"
+          ]
+        },
+        "item":{
+          "description": "The item to add to the ball of fur return list",
+          "$ref": "#/definitions/item array"
+        },
+        "count":{
+          "description": "the stack size to return if returned (default = 1)",
+          "type": "integer"
+        },
+        "chance":{
+          "description": "the chance/weight of returning this item.",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "command",
+        "item",
+        "chance"
+      ],
+      "additionalProperties": false
+    },
+    "aaRemoveTreasureChest": {
+      "properties": {
+        "command": {
+          "enum": [
+            "aa remove treasure loot"
+          ]
+        },
+        "item":{
+          "description": "The item to remove from the treasure chest loot",
+          "$ref": "#/definitions/item array"
+        }
+      },
+      "required": [
+        "command",
+        "item"
+      ],
+      "additionalProperties": false
+    },
+    "aaAddTreasureChest": {
+      "properties": {
+        "command": {
+          "enum": [
+            "aa add treasure loot"
+          ]
+        },
+        "item":{
+          "description": "The item to add to the treasure chest loot",
+          "$ref": "#/definitions/item array"
+        },
+        "chance":{
+          "description": "the chance/weight of returning this item.",
+          "type": "integer"
+        },
+        "min":{
+          "description": "Minimum number of the item in a stack (default=1)",
+          "type": "integer",
+          "minimum": 0
+        },
+        "max":{
+          "description": "Maximum number of the item in a stack (default=1)",
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "command",
+        "item",
+        "chance"
+      ],
+      "additionalProperties": false
+    },
+    "aaRemoveAtomicReconstructor": {
+      "properties": {
+        "command": {
+          "enum": [
+            "aa remove atomic reconstructor"
+          ]
+        },
+        "item":{
+          "description": "The item (recipe result) to remove from the reconstructor list",
+          "$ref": "#/definitions/item array"
+        }
+      },
+      "required": [
+        "command",
+        "item"
+      ],
+      "additionalProperties": false
+    },
+    "aaAddAtomicReconstructor": {
+      "properties": {
+        "command": {
+          "enum": [
+            "aa add atomic reconstructor"
+          ]
+        },
+        "input":{
+          "description": "The source item to be reconstructed",
+          "$ref": "#/definitions/item array"
+        },
+        "output":{
+          "description": "The item to the transformed into",
+          "$ref": "#/definitions/item array"
+        },
+        "energy":{
+          "description": "the energy cost of the transformation",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "command",
+        "input",
+        "output",
+        "energy"
+      ],
+      "additionalProperties": false
+    },
+    "aaRemoveEmpowerer": {
+      "properties": {
+        "command": {
+          "enum": [
+            "aa remove empowerer"
+          ]
+        },
+        "item":{
+          "description": "The item (recipe result) to remove from the empowerer list",
+          "$ref": "#/definitions/item array"
+        }
+      },
+      "required": [
+        "command",
+        "item"
+      ],
+      "additionalProperties": false
+    },
+    "aaAddEmpowerer": {
+      "properties": {
+        "command": {
+          "enum": [
+            "aa add empowerer"
+          ]
+        },
+        "input":{
+          "description": "The item to be empowerered",
+          "$ref": "#/definitions/item array"
+        },
+        "output":{
+          "description": "The resulting item",
+          "$ref": "#/definitions/item array"
+        },
+        "modifiers":{
+          "type": "array",
+          "description":"array of the 4 modifies",
+          "items": {
+            "description": "The modifier items (in item holders)",
+            "$ref": "#/definitions/item array"
+          },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "color":{
+          "type": "array",
+          "description": "The RGB particle color (default= [255,105,180])",
+          "items": {
+            "description": "color value between 0-255 inclusive",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 255
+          },
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "time":{
+          "description": "the time for the transformation",
+          "type": "integer"
+        },
+        "energy":{
+          "description": "the energy cost per items stand",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "command",
+        "input",
+        "output",
+        "energy",
+        "time",
+        "modifiers"
       ],
       "additionalProperties": false
     },
